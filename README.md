@@ -40,7 +40,7 @@ To train model, you run file `tools/train.py`. There are variaty of config for y
 python3 tools/train.py --model resnet50 --data_dir toydata --batch-size 8 --output checkpoint/resnet50
 ```
 
-You can study about config parameters in doc [](docs/training.md)
+You can study about config parameters in [training](docs/training.md)
 
 # Inference
 

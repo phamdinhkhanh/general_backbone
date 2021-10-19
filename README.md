@@ -1,6 +1,6 @@
 # Introduction
 
-facilitates applied backbones, implements data augumentation and optimizes train models.
+facilitates implementing deep neural-network backbones, data augmentations, optimizers and learning schedulers.
 
 - backbones :
 - loss functions :

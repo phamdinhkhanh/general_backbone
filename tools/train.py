@@ -25,7 +25,6 @@ from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from torch.utils.data.dataloader import DataLoader
 import torchvision
 from general_backbone.data import create_dataset, create_loader, Mixup, FastCollateMixup, AugMixDataset
-from general_backbone.configs import config, resolve_data_config
 from general_backbone.models import create_model, safe_model_name 
 from general_backbone.utils import resume_checkpoint, load_checkpoint, model_parameters
 from general_backbone.layers import convert_splitbn_model
@@ -66,15 +65,15 @@ _logger = logging.getLogger('train')
 
 
 parser = argparse.ArgumentParser(description='General backbone model training', add_help=False)
-parser.add_argument('-c', '--config', default='general_backbone/configs/augment_data.py', type=str, metavar='FILE',
+parser.add_argument('-c', '--config', default=None, type=str, metavar='FILE',
                     help='python config file specifying default arguments')
 
 # General Config
 parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',
-                    help='Name of model to train (default: "resnet50"')
+                    help='Name of model to train (default: "resnet50")')
 parser.add_argument('--epochs', type=int, default=300, metavar='N',
                     help='number of epochs to train (default: 300)')
-parser.add_argument('--start-epoch', default=None, type=int, metavar='N',
+parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--num-classes', type=int, default=None, metavar='N',
                     help='number of label classes (Model default if None)')
@@ -96,29 +95,26 @@ parser.add_argument('--no-resume-opt', action='store_true', default=False,
                     help='prevent resume of optimizer state when resuming model')
 
 # Logging
-parser.add_argument('--data_dir', metavar='DIR',
-                    help='path to dataset')
-parser.add_argument('--dataset', '-d', metavar='NAME', default='',
-                    help='dataset type (default: ImageFolder/ImageTar if empty)')
-parser.add_argument('--train-split', metavar='NAME', default='train',
-                    help='dataset train split (default: train)')
-parser.add_argument('--val-split', metavar='NAME', default='validation',
-                    help='dataset validation split (default: validation)')
+parser.add_argument('--log-interval', type=int, default=50, metavar='N',
+                    help='how many batches to wait before logging training status')
 parser.add_argument('--log-wandb', action='store_true', default=False,
                     help='log training and validation metrics to wandb')
-parser.add_argument("--local_rank", default=0, type=int)
+parser.add_argument("--local-rank", default=0, type=int)
 
 
-# DataLoader
-parser.add_argument('-b', '--batch-size', type=int, default=128, metavar='N',
-                    help='input batch size for training (default: 128)')
+# DataLoader & Dataset
+parser.add_argument('--data-dir', type=str, default='toydata/image_classification',
+                    help='Link to root directory dataset')
+parser.add_argument('--img-size', type=int, default=224,
+                    help='Input image size')
+parser.add_argument('-b', '--batch-size', type=int, default=16, metavar='N',
+                    help='input batch size for training (default: 16)')
 parser.add_argument('-j', '--num-workers', type=int, default=4, metavar='N',
                     help='how many training processes to use (default: 4)')
 parser.add_argument('--pin-memory', action='store_true', default=False,
                     help='Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU.')
 parser.add_argument('--shuffle', action='store_true', default=False,
                     help='Is shuffle dataset before training')
-
 
 # Learning rate schedule parameters
 parser.add_argument('--sched', default='cosine', type=str, metavar='SCHEDULER',
@@ -173,8 +169,6 @@ parser.add_argument('--clip-grad', type=float, default=None, metavar='NORM',
                     help='Clip gradient norm (default: None, no clipping)')
 parser.add_argument('--clip-mode', type=str, default='norm',
                     help='Gradient clipping mode. One of ("norm", "value", "agc")')
-parser.add_argument('--log-interval', type=int, default=50, metavar='N',
-                    help='how many batches to wait before logging training status')
 
 def _parse_args():
     # Do we have a config file to parse?
@@ -194,7 +188,13 @@ def _parse_args():
 
 # setup_default_logging()
 args, args_text = _parse_args()
-cfg = Config.fromfile(args.config)
+
+# Update args into config
+if args.config is None:
+    cfg = Config.from_argparser(args)
+else:
+    cfg = Config.fromfile(args.config)
+
 cfg_train = cfg.train_conf
 cfg_test = cfg.test_conf
 data_config_train = cfg.data_conf.data.train

@@ -7,30 +7,43 @@ Here is the full usage of the script:
 ```shell
 python tools/train.py [ARGS]
 ```
+You can define all of your parameters in config file. It will override the arguments parser. I supply a default config file `general_backbone/configs/image_clf_config.py` for your study. To execute with your config file
+
+```
+python tools/train.py general_backbone/configs/image_clf_config.py
+```
+
+The meaning of config file parameters and arguments parser are the same as below table:
+
 
 | ARGS      | Type                  |  Description                                                 |
 | -------------- | --------------------- |  ----------------------------------------------------------- |
-| **Necessary Parameters**                                  |
-| `--data-dir`          | str                   |  Path to dataset. Required initialization parameter |
-| `--dataset`  or `-d`       | str                   |  dataset type | x 
-| `--model`          | str                   |  Name of model to train (default: "resnet50"). Run `general_backbone.list_models` to get all backbones are supported|
-| `--epochs` | int | 'number of epochs to train (default: 300)' |
-| `--batch-size` or  `-b` | int |  input batch size for training (default: 128) |
-| `--pretrained`          | action= store_true                   |  Start with pretrained version of specified network (if avail) |
-| `--initial-checkpoint`          | str                   |  Initialize model from this checkpoint (default: none) |
-| `--resume`          | str                   | Resume full model and optimizer state from checkpoint (default: none) |
-| `--output` | action=store_true | path to output folder where saves model (default: none, current dir) |
-| `--num-classes` | int |  number of label classes (default:none, set value according to total classes of dataset) |
-| `--img-size` | int |  Image patch size (default: None => model default) |
-| `--validation-batch-size` or `-vb` | int |  validation batch size override (default: None) |
-| **Optimizer**                                  |
-| `--opt` | int |  Optimizer algorithm (default: "sgd") | x 
-| `--opt-eps` | float |  Optimizer Epsilon (default: None, use opt default) | 
-| `--opt-betas` | float |  Optimizer Betas (default: None, use opt default) | 
-| `--momentum` | float |  Optimizer momentum (default: 0.9) |  
-| `--weight-decay` | float |  weight decay (default: 2e-5) | 
-| `--clip-grad` | float |  Clip gradient norm (default: None, no clipping) |  
-| `--clip-mode` | float |  Gradient clipping mode. One of ("norm", "value", "agc") | 
+| **Priority config file** |
+| `--config` or `-c` | str | Path of config fire for training. Your config file's arguments overrides the arguments parser (default: None) |
+| **General Parameters**                                  |
+| `--model` | str | Name of model to train (default: "resnet50") |
+| `--epochs` | int | Number of epochs to train (default: 300) |
+| `--start-epoch` | int | Manual number of start epoch (default: 0)  |
+| `--num-classes` | int | Number of categores in image classification task (default: None)| 
+| `--pretrained` | action_store:True | Whether using pretrained model (default: False) |
+| `--eval-metric` | str | Best metric to evaluate (default: 'top1') |
+| **Checkpoint**                                  |
+| `--output` | str | Path to output folder (default: current directory folder) |
+| `--initial-checkpoint` | str | Initialize model from this checkpoint (default: none) |
+| `--checkpoint-hist`| str | Number of checkpoints to keep (default: 10) |
+| `--resume`| str | Resume full model and optimizer state from checkpoint (default: none) |
+| `--no-resume-opt` | str | prevent resume of optimizer state when resuming model |
+| **Logging**                                  |
+| `--log-interval` | str | how many batches to wait before logging training status (default:50) |
+| `--log-wandb` | str | log training and validation metrics to wandb (default:False) |
+| `--local-rank`| int | if equal 0, log information on local (default: 0) |
+| **DataLoader & Datset**                                  | 
+| `--data-dir` | str | path to root dataset |
+| `--img-size` | int | input image size |
+| `--batch-size` or `-b` | int | input batch size for training (default: 32) |
+| `--num-workers` or `-j` | int | how many training processes to use (default: 4) |
+| `--pin-memory` | action_store:True | Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU. |
+| `--shuffle` or `-j` | action_store:True | Is shuffle dataset before training |
 | **Learning rate schedule parameters**                                  |
 | `--sched` | str | LR scheduler (default: "cosine") | x 
 | `--lr` | float | learning rate (default: 0.05) |
@@ -47,47 +60,3 @@ python tools/train.py [ARGS]
 | `--cooldown-epochs` | int | epochs to cooldown LR at min_lr, after cyclic schedule ends |
 | `--patience-epochs` | int | patience epochs for Plateau LR scheduler (default: 10) |
 | `--decay-rate` or `dr` | float | LR decay rate (default: 0.1) |
-| **Augmentation**                                  |
-| `--no-aug` | action=store_true | Disable all training augmentation, override other train aug args |
-| `--scale` | float | Random resize scale (default: 0.08 1.0) |
-| `--ratio` | float | Random resize aspect ratio (default: 0.75 1.33) |
-| `--hflip` | float | Horizontal flip training aug probability |
-| `--vflip` | float | Vertical flip training aug probability |
-| `--color-jitter` | float | Color jitter factor (default: 0.4) |
-| `--aug-repeats` | int | Number of augmentation repetitions (distributed training only) (default: 0) |
-| `--aug-splits` | int | Number of augmentation splits (default: 0, valid: 0 or >=2) |
-| **Loss**                                  |
-| `--jsd-loss` | int | Enable Jensen-Shannon Divergence + CE loss. Use with `--aug-splits`. |
-| `--bce-loss` | int | Enable BCE loss w/ Mixup/CutMix use. |
-| `--bce-target-thresh` | int | Threshold for binarizing softened BCE targets (default: None, disabled) |
-| `--mixup` | float | mixup alpha, mixup enabled if > 0. (default: 0.) |
-| `--cutmix` | float | cutmix alpha, cutmix enabled if > 0. (default: 0.) |
-| `--cutmix-minmax` | float | cutmix min/max ratio, overrides alpha and enables cutmix if set (default: None) |
-| `--mixup-prob`| float | Probability of performing mixup or cutmix when either/both is enabled |
-| `--mixup-switch-prob` | float | Probability of performing mixup or cutmix when either/both is enabled |
-| `--mixup-mode` | str | How to apply mixup/cutmix params. Per "batch", "pair", or "elem" |
-| `--mixup-off-epoch` | int | Turn off mixup after this epoch, disabled if 0 (default: 0) |
-| `--smoothing` | float | Label smoothing (default: 0.1) |
-| **Batch norm parameters only works with gen_efficientnet**                                  |
-| `--bn-tf` | action=store_true | Use Tensorflow BatchNorm defaults for models that support it (default: False) |
-| `--bn-momentum` | float | BatchNorm momentum override (if not None) |
-| `--bn-eps` | float | BatchNorm epsilon override (if not None) |
-| `--sync_bn` | action=store_true | Enable NVIDIA Apex or Torch synchronized BatchNorm. |
-| `--dist_bn` | str | Distribute BatchNorm stats between nodes after each epoch ("broadcast", "reduce", or "") |
-| `--split-bn` | action=store_true | Enable separate BN layers per augmentation split. |
-| **Model Exponential Moving Average** |
-| `--model-ema` | action=store_true | Enable tracking moving average of model weights |
-| `--model-ema-decay` | float | decay factor for model weights moving average (default: 0.9998) |
-| **Setup computer** |
-| `--seed` | int | random seed (default: 42) |
-| `--checkpoint-hist` | int | number of checkpoints to keep (default: 10) |
-| `--workers` or `-j` | int | how many CPU training processes to use (default: 4) |
-| `--save-images` | action=store_true | save images of input bathes every log interval for debugging |
-| `--amp` | action=store_true | use NVIDIA Apex AMP or Native AMP for mixed precision training |
-| `--apex-amp` | action=store_true | Use NVIDIA Apex AMP mixed precision |
-| `--native-amp` | action=store_true | Use Native Torch AMP mixed precision |
-| `--channels-last` | action=store_true | Use channels_last memory layout |
-| `--pin-mem` | action=store_true | Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU. |
-| `--eval-metric` | str | evaluation metric (default: "top1") |
-| `--torchscript` | action=store_true | convert model torchscript for inference |
-

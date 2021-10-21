@@ -362,6 +362,85 @@ class Config:
         return cfg
 
     @staticmethod
+    def from_argparser(args):
+        cfg_dict = dict(
+            train_conf=dict(
+                # General params
+                model=args.model,
+                epochs=args.epochs,
+                start_epoch=args.start_epoch,
+                pretrained=args.pretrained,
+                num_classes=args.num_classes,    
+                eval_metric=args.eval_metric,
+                output=args.output,
+                checkpoint_hist=args.checkpoint_hist,
+                initial_checkpoint=args.initial_checkpoint,
+                resume=args.resume,
+                no_resume_opt=args.no_resume_opt,
+
+                # Logging
+                log_interval=args.log_interval,
+                log_wandb=args.log_wandb,
+                local_rank=args.local_rank,
+
+                # DataLoader
+                batch_size=args.batch_size,
+                num_workers=args.num_workers,
+                prefetch_factor=2,
+                pin_memory=args.pin_memory, 
+                shuffle=args.shuffle,
+
+                # Learning rate
+                lr=args.lr,
+                lr_noise_pct=args.lr_noise_pct,
+                lr_noise_std=args.lr_noise_std,
+                lr_cycle_mul=args.lr_cycle_mul,
+                lr_cycle_decay=args.lr_cycle_decay,
+                lr_cycle_limit=args.lr_cycle_limit,
+                sched=args.sched,
+                min_lr=args.min_lr, 
+                warmup_lr=args.warmup_lr,
+                warmup_epochs=args.warmup_epochs,
+                lr_k_decay=args.lr_k_decay,
+                decay_epochs=args.decay_epochs,
+                decay_rate=args.decay_rate,
+                patience_epochs=args.patience_epochs,
+                cooldown_epochs=args.cooldown_epochs,
+            ),
+            test_conf = dict(
+                # Data Loader
+                batch_size=args.batch_size,
+                shuffle=False,
+                num_workers=args.num_workers,
+                prefetch_factor=2,
+                pin_memory=args.pin_memory
+            ),
+            data_root = args.data_dir,
+
+            data_conf = dict(
+                class_2_idx=None, # Dictionary link class with indice. For example: {'dog':0, 'cat':1}, Take the folder name for label If None.
+                img_size=args.img_size,
+                data = dict(
+                    train=dict(
+                        data_dir=args.data_dir,
+                        name_split='train',
+                        is_training=True,
+                        debug=False, # If you want to debug Augumentation, turn into True
+                        dir_debug = 'tmp/alb_img_debug', # Directory where to save Augmentation debug
+                        shuffle=True
+                        ),
+                    eval=dict(
+                        data_dir=args.data_dir,
+                        name_split='test',
+                        is_training=False,
+                        shuffle=False
+                        )
+                )
+            )
+        )
+        return Config(cfg_dict=cfg_dict)
+
+    @staticmethod
     def auto_argparser(description=None):
         """Generate argparser from config file automatically (experimental)"""
         partial_parser = ArgumentParser(description=description)

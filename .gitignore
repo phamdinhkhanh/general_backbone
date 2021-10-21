@@ -4,3 +4,4 @@ cifar-10-python.tar.gz
 *checkpoint*
 *egg-info*
 tmp/
+output/

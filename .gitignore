@@ -1,3 +1,6 @@
 cifar-10-batches-py/
 cifar-10-python.tar.gz
 *__pycache__*
+*checkpoint*
+*egg-info*
+tmp/

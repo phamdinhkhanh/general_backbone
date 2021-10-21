@@ -31,7 +31,7 @@ def create_scheduler(args, optimizer):
     cycle_args = dict(
         cycle_mul=getattr(args, 'lr_cycle_mul', 1.),
         cycle_decay=getattr(args, 'lr_cycle_decay', 0.1),
-        cycle_limit=getattr(args, 'lr_cycle_limit', 1),
+        cycle_limit=getattr(args, 'lr_cycle_limit', 1.),
     )
 
     lr_scheduler = None
@@ -105,3 +105,5 @@ def create_scheduler(args, optimizer):
         num_epochs = lr_scheduler.get_cycle_length() + args.cooldown_epochs
 
     return lr_scheduler, num_epochs
+
+

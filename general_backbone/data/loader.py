@@ -144,6 +144,68 @@ def _worker_init(worker_id, worker_seeding='all'):
             np.random.seed(worker_info.seed % (2 ** 32 - 1))
 
 
+
+def create_loader_aug(
+        dataset,
+        batch_size,
+        is_training=False,
+        re_split=False,
+        num_aug_repeats=0,
+        num_aug_splits=0,
+        num_workers=1,
+        distributed=False,
+        collate_fn=None,
+        pin_memory=False,
+        use_multi_epochs_loader=False,
+        persistent_workers=True,
+        worker_seeding='all',
+):
+    re_num_splits = 0
+    if re_split:
+        # apply RE to second half of batch if no aug split otherwise line up with aug split
+        re_num_splits = num_aug_splits or 2
+
+    sampler = None
+    if distributed and not isinstance(dataset, torch.utils.data.IterableDataset):
+        if is_training:
+            if num_aug_repeats:
+                sampler = RepeatAugSampler(dataset, num_repeats=num_aug_repeats)
+            else:
+                sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        else:
+            # This will add extra duplicate entries to result in equal num
+            # of samples per-process, will slightly alter validation results
+            sampler = OrderedDistributedSampler(dataset)
+    else:
+        assert num_aug_repeats == 0, "RepeatAugment not currently supported in non-distributed or IterableDataset use"
+
+    if collate_fn is None:
+        collate_fn = torch.utils.data.dataloader.default_collate
+
+    loader_class = torch.utils.data.DataLoader
+    if use_multi_epochs_loader:
+        loader_class = MultiEpochsDataLoader
+
+    loader_args = dict(
+        batch_size=batch_size,
+        shuffle=not isinstance(dataset, torch.utils.data.IterableDataset) and sampler is None and is_training,
+        num_workers=num_workers,
+        sampler=sampler,
+        collate_fn=collate_fn,
+        pin_memory=pin_memory,
+        drop_last=is_training,
+        worker_init_fn=partial(_worker_init, worker_seeding=worker_seeding),
+        persistent_workers=persistent_workers
+    )
+    try:
+        loader = loader_class(dataset, **loader_args)
+    except TypeError as e:
+        loader_args.pop('persistent_workers')  # only in Pytorch 1.7+
+        loader = loader_class(dataset, **loader_args)
+
+    return loader
+
+
 def create_loader(
         dataset,
         input_size,

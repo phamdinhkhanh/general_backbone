@@ -1,4 +1,2 @@
-torch>=1.4.0
-torchvision>=0.5.0
-pyyaml
-huggingface_hub
+-r requirements/augmentation.txt
+-r requirements/build.txt

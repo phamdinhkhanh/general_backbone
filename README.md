@@ -28,9 +28,9 @@ general_backbone.list_models()
 
 Results
 
-```
-{'resnet': ['resnet18', 'resnet18d', 'resnet34', 'resnet34d', 'resnet26', 'resnet26d', 'resnet26t', 'resnet50', 'resnet50d', 'resnet50t', 'resnet101', 'resnet101d', 'resnet152', 'resnet152d', 'resnet200', 'resnet200d', 'tv_resnet34', 'tv_resnet50', 'tv_resnet101', 'tv_resnet152', 'wide_resnet50_2', 'wide_resnet101_2', 'resnext50_32x4d', 'resnext50d_32x4d', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'tv_resnext50_32x4d', 'ig_resnext101_32x8d', 'ig_resnext101_32x16d', 'ig_resnext101_32x32d', 'ig_resnext101_32x48d', 'ssl_resnet18', 'ssl_resnet50', 'ssl_resnext50_32x4d', 'ssl_resnext101_32x4d', 'ssl_resnext101_32x8d', 'ssl_resnext101_32x16d', 'swsl_resnet18', 'swsl_resnet50', 'swsl_resnext50_32x4d', 'swsl_resnext101_32x4d', 'swsl_resnext101_32x8d', 'swsl_resnext101_32x16d', 'seresnet18', 'seresnet34', 'seresnet50', 'seresnet50t', 'seresnet101', 'seresnet152', 'seresnet152d', 'seresnet200d', 'seresnet269d', 'seresnext26d_32x4d', 'seresnext26t_32x4d', 'seresnext50_32x4d', 'seresnext101_32x4d', 'seresnext101_32x8d', 'senet154', 'ecaresnet26t', 'ecaresnetlight', 'ecaresnet50d', 'ecaresnet50d_pruned', 'ecaresnet50t', 'ecaresnet101d', 'ecaresnet101d_pruned', 'ecaresnet200d', 'ecaresnet269d', 'ecaresnext26t_32x4d', 'ecaresnext50t_32x4d', 'resnetblur18', 'resnetblur50', 'resnetrs50', 'resnetrs101', 'resnetrs152', 'resnetrs200', 'resnetrs270', 'resnetrs350', 'resnetrs420']}
-```
+
+`{'resnet': ['resnet18', 'resnet18d', 'resnet34', 'resnet34d', 'resnet26', 'resnet26d', 'resnet26t', 'resnet50', 'resnet50d', 'resnet50t', 'resnet101', 'resnet101d', 'resnet152', 'resnet152d', 'resnet200', 'resnet200d', 'tv_resnet34', 'tv_resnet50', 'tv_resnet101', 'tv_resnet152', 'wide_resnet50_2', 'wide_resnet101_2', 'resnext50_32x4d', 'resnext50d_32x4d', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'tv_resnext50_32x4d', 'ig_resnext101_32x8d', 'ig_resnext101_32x16d', 'ig_resnext101_32x32d', 'ig_resnext101_32x48d', 'ssl_resnet18', 'ssl_resnet50', 'ssl_resnext50_32x4d', 'ssl_resnext101_32x4d', 'ssl_resnext101_32x8d', 'ssl_resnext101_32x16d', 'swsl_resnet18', 'swsl_resnet50', 'swsl_resnext50_32x4d', 'swsl_resnext101_32x4d', 'swsl_resnext101_32x8d', 'swsl_resnext101_32x16d', 'seresnet18', 'seresnet34', 'seresnet50', 'seresnet50t', 'seresnet101', 'seresnet152', 'seresnet152d', 'seresnet200d', 'seresnet269d', 'seresnext26d_32x4d', 'seresnext26t_32x4d', 'seresnext50_32x4d', 'seresnext101_32x4d', 'seresnext101_32x8d', 'senet154', 'ecaresnet26t', 'ecaresnetlight', 'ecaresnet50d', 'ecaresnet50d_pruned', 'ecaresnet50t', 'ecaresnet101d', 'ecaresnet101d_pruned', 'ecaresnet200d', 'ecaresnet269d', 'ecaresnext26t_32x4d', 'ecaresnext50t_32x4d', 'resnetblur18', 'resnetblur50', 'resnetrs50', 'resnetrs101', 'resnetrs152', 'resnetrs200', 'resnetrs270', 'resnetrs350', 'resnetrs420']}`
+
 
 To select your backbone type, you set model=`resnet50` in train_config of your config file. An example config file [general_backbone/configs/image_clf_config.py](general_backbone/configs/image_clf_config.py).
 
@@ -58,19 +58,19 @@ Inside each folder cat and dog is the images. If you want to add a new class, yo
 | Augumentation Style     | Parameters                  |  Description                                                 |
 | ------------------------- | ----------------------------- | ---------------------------------- |
 | **Pixel-level transforms** |
-| Blur | {'blur_limit':7, 'always_apply':False, 'p':0.5} | Blur the input image using a random-sized kernel | 
-| GaussNoise | {'var_limit':(10.0, 50.0), 'mean':0, 'per_channel':True, 'always_apply':False, 'p':0.5} | Apply gaussian noise to the input image |
-| GaussianBlur | {'blur_limit':(3, 7), 'sigma_limit':0, 'always_apply':False, 'p':0.5} | Blur the input image using a Gaussian filter with a random kernel size |
-| GlassBlur | {'sigma': 0.7, 'max_delta':4, 'iterations':2, 'always_apply':False, 'mode':'fast', 'p':0.5} | Apply glass noise to the input image |
-| HueSaturationValue | {'hue_shift_limit':20, 'sat_shift_limit':30, 'val_shift_limit':20, 'always_apply':False, 'p':0.5 | Randomly change hue, saturation and value of the input image |
-| MedianBlur | {'blur_limit':7, 'always_apply':False, 'p':0.5} | Blur the input image using a median filter with a random aperture linear size |
-| RGBShift | {'r_shift_limit': 15, 'g_shift_limit': 15, 'b_shift_limit': 15, 'p': 0.5} | Randomly shift values for each channel of the input RGB image. |
-| Normalize | {'mean':(0.485, 0.456, 0.406), 'std':(0.229, 0.224, 0.225)} | Normalization is applied by the formula: `img = (img - mean * max_pixel_value) / (std * max_pixel_value)` |
+| Blur | `{'blur_limit':7, 'always_apply':False, 'p':0.5}` | Blur the input image using a random-sized kernel | 
+| GaussNoise | `{'var_limit':(10.0, 50.0), 'mean':0, 'per_channel':True, 'always_apply':False, 'p':0.5}` | Apply gaussian noise to the input image |
+| GaussianBlur | `{'blur_limit':(3, 7), 'sigma_limit':0, 'always_apply':False, 'p':0.5}` | Blur the input image using a Gaussian filter with a random kernel size |
+| GlassBlur | `{'sigma': 0.7, 'max_delta':4, 'iterations':2, 'always_apply':False, 'mode':'fast', 'p':0.5}` | Apply glass noise to the input image |
+| HueSaturationValue | `{'hue_shift_limit':20, 'sat_shift_limit':30, 'val_shift_limit':20, 'always_apply':False, 'p':0.5}` | Randomly change hue, saturation and value of the input image |
+| MedianBlur | `{'blur_limit':7, 'always_apply':False, 'p':0.5}` | Blur the input image using a median filter with a random aperture linear size |
+| RGBShift | `{'r_shift_limit': 15, 'g_shift_limit': 15, 'b_shift_limit': 15, 'p': 0.5}` | Randomly shift values for each channel of the input RGB image. |
+| Normalize | `{'mean':(0.485, 0.456, 0.406), 'std':(0.229, 0.224, 0.225)}` | Normalization is applied by the formula: `img = (img - mean * max_pixel_value) / (std * max_pixel_value)` |
 | **Spatial-level transforms** |
-| RandomCrop | {'height':128, 'width':128} | Crop a random part of the input |
-| VerticalFlip | {'p': 0.5} | Flip the input vertically around the x-axis |
-| ShiftScaleRotate | {'shift_limit':0.05, 'scale_limit':0.05, 'rotate_limit':15, 'p':0.5} | Randomly apply affine transforms: translate, scale and rotate the input |
-| RandomBrightnessContrast | {'brightness_limit':0.2, 'contrast_limit':0.2, 'brightness_by_max':True, 'always_apply':False,'p': 0.5} | Randomly change brightness and contrast of the input image |
+| RandomCrop | `{'height':128, 'width':128}` | Crop a random part of the input |
+| VerticalFlip | `{'p': 0.5}` | Flip the input vertically around the x-axis |
+| ShiftScaleRotate | `{'shift_limit':0.05, 'scale_limit':0.05, 'rotate_limit':15, 'p':0.5}` | Randomly apply affine transforms: translate, scale and rotate the input |
+| RandomBrightnessContrast | `{'brightness_limit':0.2, 'contrast_limit':0.2, 'brightness_by_max':True, 'always_apply':False,'p': 0.5}` | Randomly change brightness and contrast of the input image |
 
 Augumentation is configured in the configuration file [general_backbone/configs/image_clf_config.py](general_backbone/configs/image_clf_config.py):
 

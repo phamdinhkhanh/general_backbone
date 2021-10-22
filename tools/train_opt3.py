@@ -173,7 +173,6 @@ parser.add_argument('--clip-mode', type=str, default='norm',
 def _parse_args():
     # Do we have a config file to parse?
     args_config, remaining = parser.parse_known_args()
-
     if args_config.config:
         with open(args_config.config, 'r') as f:
             cfg = Config(filename=args_config.config)
@@ -182,19 +181,19 @@ def _parse_args():
     # The main arg parser parses the rest of the args, the usual
     # defaults will have been overridden if config file specified.
     args = parser.parse_args(remaining)
-    
+
     # Cache the args as a text string to save them in the output dir later
     args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
-    return args, args_config, args_text
+    return args, args_text
 
 # setup_default_logging()
-args, args_config, args_text = _parse_args()
+args, args_text = _parse_args()
 
 # Update args into config
-if args_config.config is None:
+if args.config is None:
     cfg = Config.from_argparser(args)
 else:
-    cfg = Config.fromfile(args_config.config)
+    cfg = Config.fromfile(args.config)
 
 cfg_train = cfg.train_conf
 cfg_test = cfg.test_conf
@@ -221,20 +220,31 @@ def main():
     if cfg_train.local_rank == 0:
         print(f'Model {safe_model_name(args.model)} created, param count:{sum([m.numel() for m in model.parameters()])}')    
 
-    dataset_train = AugmentationDataset(data_dir=cfg.data_root,
+
+    transform_alb = A.Compose(
+        [   
+            A.RandomResizedCrop(width=256, height=256, scale=(0.9, 1.0), ratio=(0.9, 1.1), p=0.5),
+            A.ColorJitter (brightness=0.35, contrast=0.5, saturation=0.5, hue=0.2, always_apply=False, p=0.5),
+            A.ShiftScaleRotate (shift_limit_y=(0.05, 0.4), scale_limit=0.25, rotate_limit=30, interpolation=0, border_mode=4, always_apply=False, p=0.2),
+            A.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD),
+            A.Resize(cfg.data_conf.img_size, cfg.data_conf.img_size),
+            ToTensorV2()
+        ]
+    )
+
+
+    dataset_train = AlbImageDataset(data_dir=data_config_train.data_dir,
                             name_split=data_config_train.name_split,
-                            config_file = args.config, 
-                            dict_transform=cfg.data_conf.dict_transform, 
-                            input_size=(cfg.data_conf.img_size, cfg.data_conf.img_size),
+                            transforms_alb=transform_alb,
+                            input_size=cfg.data_conf.img_size,
                             debug=data_config_train.debug,
                             dir_debug=data_config_train.dir_debug, 
                             class_2_idx=cfg.data_conf.class_2_idx)
 
-    dataset_eval = AugmentationDataset(data_dir=cfg.data_root,
+    dataset_eval = AlbImageDataset(data_dir=data_config_test.data_dir,
                             name_split=data_config_test.name_split,
-                            config_file = args.config, 
-                            dict_transform=cfg.data_conf.dict_transform, 
-                            input_size=(cfg.data_conf.img_size, cfg.data_conf.img_size),
+                            transforms_alb=transform_alb,
+                            input_size=cfg.data_conf.img_size,
                             class_2_idx=cfg.data_conf.class_2_idx)
 
     # Dataloader

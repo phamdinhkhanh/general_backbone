@@ -1,19 +1,16 @@
-from shutil import Error
+from genericpath import exists
+from shutil import Error, ignore_patterns
 import numpy as np
 import cv2
 import os
-import glob
-import sys
-
-from torchvision.transforms.transforms import Compose, Normalize, ToTensor
-sys.path.append('..')
-
+import shutil
 import torch
 from torch.utils import data
-from torch.utils.data import DataLoader
-from torchvision import  transforms
+import torchvision
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+from general_backbone.configs import image_clf_config
+from general_backbone.utils import ConfigDict, Config
 
 def flip(img, annotation):
     img = np.fliplr(img).copy()
@@ -235,7 +232,21 @@ class WLFWDatasets(data.Dataset):
 
 
 class AlbImageDataset(data.Dataset):
-    def __init__(self, data_dir='toydata/image_classification', name_split='train', transforms_alb=None, input_size=(256, 256), debug=False, dir_debug = 'tmp/alb_img_debug', class_2_idx=None):
+    '''
+        This dataset that accept to customize your Image training process. Especially that accept Albumentation's transformations
+        Args:
+            data_dir (str: 'toydata/image_classification'): root data directory
+            name_split (str: train): Type of dataset in ['train', 'test', 'validation'].
+            transforms_alb (albumentations.Compose : None): a compose of albumentations transformation.
+            input_size (tuple: (256, 256)): Input image size
+            debug (bool: False): whether save transformation debug image
+            dir_debug (str: 'tmp/alb_img_debug'): place to save debug image
+            class_2_idx (dict: None): mapping class name to indices. If None, model auto mapping folder classname in dataset.
+    '''
+
+    def __init__(self, data_dir='toydata/image_classification', name_split='train', \
+            transforms_alb=None, input_size=(256, 256), debug=False, \
+            dir_debug = 'tmp/alb_img_debug', class_2_idx=None):
         self.data_dir = data_dir
         self.name_split = name_split
         self.transforms_alb = transforms_alb
@@ -282,7 +293,6 @@ class AlbImageDataset(data.Dataset):
         img_path = self.img_paths[index]
         label = self.labels[index]
         img = cv2.imread(img_path)
-        # img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
         
         if self.transforms_alb and not isinstance(self.transforms_alb, A.Compose):
             raise TypeError('transform_alb must be an object of A.Compose')
@@ -290,42 +300,170 @@ class AlbImageDataset(data.Dataset):
         if self.transforms_alb:
             tran_res = self.transforms_alb(image=img, category_ids=self.class_ids)
             img = tran_res['image']
-
+        else:
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            img = torch.Tensor(img).permute(2, 0, 1)
         if self.debug:
-            # print(img.cpu().detach().numpy().shape)
-            # cv2.imwrite(os.path.join(self.dir_debug, '{:3d}.png'.format(index)), img.cpu().detach().numpy())
-            cv2.imwrite(os.path.join(self.dir_debug, '{:3d}.png'.format(index)), img)
-        
-        # if len(img) == 3:
-        #     img = torch.unsqueeze(img, axis=0)
+            if isinstance(img, torch.Tensor):
+                img = torchvision.transforms.ToPILImage()(img)
+                img.save(os.path.join(self.dir_debug, '{:3d}.png'.format(index)))
+            elif isinstance(img, np.array):
+                cv2.imwrite(os.path.join(self.dir_debug, '{:3d}.png'.format(index)), img)
+            else:
+                raise(TypeError, 'Can not save image from type {}'.format(type(img)))
 
         return (img, label)
 
     def __len__(self):
         return len(self.img_paths)
 
-# if __name__ == '__main__':
-#     # Declare an augmentation pipeline
-#     transform_alb = A.Compose(
-#         [   
-#             A.RandomResizedCrop(width=256, height=256, scale=(0.9, 1.0), ratio=(0.9, 1.1), p=0.5),
-#             A.ColorJitter (brightness=0.35, contrast=0.5, saturation=0.5, hue=0.2, always_apply=False, p=0.5),
-#             A.ShiftScaleRotate (shift_limit_y=(0.05, 0.4), scale_limit=0.25, rotate_limit=30, interpolation=0, border_mode=4, always_apply=False, p=0.2),
-#             # A.Normalize(mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225]),
-#             # ToTensorV2()
-#         ]
-#     )
 
+class AugmentationDataset(data.Dataset):
+    '''
+        This dataset that accept to customize your Image training process. Especially that accept Albumentation's transformations
+        Args:
+            data_dir (str: 'toydata/image_classification'): root data directory
+            name_split (str: train): Type of dataset in ['train', 'test', 'validation'].
+            config_file (str : ''general_backbone/configs/image_clf_config.py'): a link to config file
+            dict_transform (dict:None) : dictionary of transformation
+            input_size (tuple: (256, 256)): Input image size
+            debug (bool: False): whether save transformation debug image
+            dir_debug (str: 'tmp/alb_img_debug'): place to save debug image
+            class_2_idx (dict: None): mapping class name to indices. If None, model auto mapping folder classname in dataset.
+    '''
 
-#     albdataset = AlbImageDataset(data_dir='toydata/image_classification',
-#                             name_split='train',
-#                             transforms_alb=transform_alb,
-#                             input_size=(256, 256),
-#                             debug=True,
-#                             dir_debug = 'tmp/alb_img_debug', 
-#                             class_2_idx=None)
+    def __init__(self, data_dir='toydata/image_classification', name_split='train', \
+            config_file = 'general_backbone/configs/image_clf_config.py', dict_transform=None, \
+            input_size=(256, 256), debug=False, dir_debug = 'tmp/alb_img_debug', class_2_idx=None):
 
-#     for i in range(50):
-#         img, label = albdataset.__getitem__(i)
-#         # print(img.shape)
-#         # print(label)
+        self.data_dir = data_dir
+        self.name_split = name_split
+        self.input_size = input_size
+        
+        self.dict_transform = None
+        if dict_transform:
+            self.dict_transform = dict_transform
+        elif config_file:
+            cfg = Config.fromfile(config_file)
+            self.dict_transform = cfg.data_conf.dict_transform
+            self.input_size = cfg.img_size
+        
+        self.debug = debug
+        self.dir_debug = dir_debug
+        self.f_path = os.path.join(self.data_dir, self.name_split)
+        self.img_paths = []
+        self.labels = []
+        for root, dirs, files in os.walk(self.f_path):
+            for file in files:
+                if file.endswith(('.png', '.jpeg', '.jpg')):
+                    label = os.path.basename(root)
+                    self.img_paths.append(os.path.join(root, file))
+                    self.labels.append(label)
+        if self.dict_transform:
+            self.transforms_alb = self.set_transform(self.dict_transform)
+        else:
+            self.transforms_alb = None
+        # Generate class to index. If class_2_idx is None, it is defined by labels by default 
+        if class_2_idx is None:
+            self.class_dict = {}
+            start_idx = 0
+            for label in set(self.labels):
+                if label not in self.class_dict:
+                    self.class_dict[label] = start_idx
+                    start_idx += 1
+        else:
+            self.class_dict = class_2_idx
+        self.class_ids = list(self.class_dict.values())
+
+        # Mapping labels to labels_index
+        self.labels = list(map(lambda x: self.class_dict[x], self.labels))
+
+        # Shuffle dataset
+        self.idx_shuf = np.arange(len(self.img_paths))
+        np.random.shuffle(self.idx_shuf)
+        self.img_paths = [self.img_paths[i] for i in self.idx_shuf]
+        self.labels = [self.labels[i] for i in self.idx_shuf]
+
+        # Create debug folder
+        self._create_debug()
+
+    def set_transform(self, dict_transform):
+        step_transforms = [self.init_transform(type_tran) for type_tran in dict_transform]
+
+        transform = A.Compose(
+            step_transforms
+        )
+        return transform
+
+    def init_transform(self, type_tran):
+        if type_tran=='SmallestMaxSize':
+            tran = A.SmallestMaxSize(**self.dict_transform['SmallestMaxSize'])
+        elif type_tran=='Resize':
+            tran = A.Resize(**self.dict_transform['Resize'])
+        elif type_tran=='ShiftScaleRotate':
+            tran = A.ShiftScaleRotate(**self.dict_transform['ShiftScaleRotate'])
+        elif type_tran=='RandomCrop':
+            tran = A.RandomCrop(**self.dict_transform['RandomCrop'])
+        elif type_tran=='RandomResizedCrop':
+            tran = A.RandomResizedCrop(**self.dict_transform['RandomResizedCrop'])
+        elif type_tran=='RandomBrightnessContrast':
+            tran = A.RandomBrightnessContrast(**self.dict_transform['RandomBrightnessContrast'])
+        elif type_tran=='Normalize':
+            tran = A.Normalize(**self.dict_transform['Normalize'])
+        elif type_tran=='ToTensorV2':
+            tran = ToTensorV2(**self.dict_transform['ToTensorV2'])
+        elif type_tran=='Blur':
+            tran = A.Blur(**self.dict_transform['Blur'])
+        elif type_tran=='GaussNoise':
+            tran = A.GaussNoise(**self.dict_transform['GaussNoise'])
+        elif type_tran=='GaussianBlur':
+            tran = A.GaussianBlur(**self.dict_transform['GaussianBlur'])
+        elif type_tran=='GlassBlur':
+            tran = A.GlassBlur(**self.dict_transform['GlassBlur'])
+        elif type_tran=='HueSaturationValue':
+            tran = A.HueSaturationValue(**self.dict_transform['HueSaturationValue'])
+        elif type_tran=='ColorJitter':
+            tran = A.ColorJitter(**self.dict_transform['ColorJitter'])
+        elif type_tran=='MedianBlur':
+            tran = A.MedianBlur(**self.dict_transform['MedianBlur'])
+        elif type_tran=='RGBShift':
+            tran = A.RGBShift(**self.dict_transform['RGBShift'])
+        elif type_tran=='VerticalFlip':
+            tran = A.VerticalFlip(**self.dict_transform['VerticalFlip'])
+        else:
+            raise TypeError('currently we do not support {} augmentation type'.format(type_tran))
+        return tran
+        
+    def __getitem__(self, index):
+        img_path = self.img_paths[index]
+        label = self.labels[index]
+        img = cv2.imread(img_path)
+        
+        if self.transforms_alb and not isinstance(self.transforms_alb, A.Compose):
+            raise TypeError('transform_alb must be an object of A.Compose')
+
+        if self.transforms_alb:
+            tran_res = self.transforms_alb(image=img, category_ids=self.class_ids)
+            img = tran_res['image']
+        else:
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            img = torch.Tensor(img).permute(2, 0, 1)
+
+        if self.debug:
+            if isinstance(img, torch.Tensor):
+                img = torchvision.transforms.ToPILImage()(img)
+                img.save(os.path.join(self.dir_debug, '{:3d}.png'.format(index)))
+            elif isinstance(img, np.array):
+                cv2.imwrite(os.path.join(self.dir_debug, '{:3d}.png'.format(index)), img)
+            else:
+                raise(TypeError, 'Can not save image from type {}'.format(type(img)))
+        return (img, label)
+
+    def _create_debug(self):
+        if self.debug:
+            if os.path.exists(self.dir_debug):
+                shutil.rmtree(self.dir_debug, ignore_errors=True)
+                os.makedirs(self.dir_debug, exist_ok=True)
+
+    def __len__(self):
+        return len(self.img_paths)

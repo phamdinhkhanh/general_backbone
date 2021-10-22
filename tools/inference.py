@@ -173,7 +173,6 @@ parser.add_argument('--clip-mode', type=str, default='norm',
 def _parse_args():
     # Do we have a config file to parse?
     args_config, remaining = parser.parse_known_args()
-
     if args_config.config:
         with open(args_config.config, 'r') as f:
             cfg = Config(filename=args_config.config)
@@ -182,19 +181,19 @@ def _parse_args():
     # The main arg parser parses the rest of the args, the usual
     # defaults will have been overridden if config file specified.
     args = parser.parse_args(remaining)
-    
+
     # Cache the args as a text string to save them in the output dir later
     args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
-    return args, args_config, args_text
+    return args, args_text
 
 # setup_default_logging()
-args, args_config, args_text = _parse_args()
+args, args_text = _parse_args()
 
 # Update args into config
-if args_config.config is None:
+if args.config is None:
     cfg = Config.from_argparser(args)
 else:
-    cfg = Config.fromfile(args_config.config)
+    cfg = Config.fromfile(args.config)
 
 cfg_train = cfg.train_conf
 cfg_test = cfg.test_conf
@@ -213,244 +212,7 @@ def main():
 
     # move model to GPU
     model.cuda()
-
-    if cfg_train.num_classes is None:
-        assert hasattr(model, 'num_classes'), 'Model must have `num_classes` attr if not set on cmd line/config.'
-        args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
-
-    if cfg_train.local_rank == 0:
-        print(f'Model {safe_model_name(args.model)} created, param count:{sum([m.numel() for m in model.parameters()])}')    
-
-    dataset_train = AugmentationDataset(data_dir=cfg.data_root,
-                            name_split=data_config_train.name_split,
-                            config_file = args.config, 
-                            dict_transform=cfg.data_conf.dict_transform, 
-                            input_size=(cfg.data_conf.img_size, cfg.data_conf.img_size),
-                            debug=data_config_train.debug,
-                            dir_debug=data_config_train.dir_debug, 
-                            class_2_idx=cfg.data_conf.class_2_idx)
-
-    dataset_eval = AugmentationDataset(data_dir=cfg.data_root,
-                            name_split=data_config_test.name_split,
-                            config_file = args.config, 
-                            dict_transform=cfg.data_conf.dict_transform, 
-                            input_size=(cfg.data_conf.img_size, cfg.data_conf.img_size),
-                            class_2_idx=cfg.data_conf.class_2_idx)
-
-    # Dataloader
-    loader_train = DataLoader(
-        dataset_train,
-        batch_size=cfg_train.batch_size,
-        shuffle=cfg_train.shuffle,
-        num_workers=cfg_train.num_workers,
-        pin_memory=cfg_train.pin_memory,
-        prefetch_factor=cfg_train.prefetch_factor)
-
     
-    loader_eval = DataLoader(
-        dataset_eval,
-        batch_size=cfg_test.batch_size,
-        shuffle=cfg_test.shuffle,
-        num_workers=cfg_test.num_workers,
-        pin_memory=cfg_test.pin_memory,
-        prefetch_factor=cfg_test.prefetch_factor)
-
-    # Optimizer and Scheduler
-    optimizer = torch.optim.Adam(
-        [{
-            'params': model.parameters()
-        }],
-        lr=cfg_train.lr,
-        weight_decay=1e-6)
-
-    # setup loss function
-    
-    train_loss_fn = nn.CrossEntropyLoss().cuda()
-    validate_loss_fn = nn.CrossEntropyLoss().cuda()
-
-    # optionally resume from a checkpoint
-    resume_epoch = None
-    if cfg_train.resume:
-        resume_epoch = resume_checkpoint(
-            model, cfg_train.resume,
-            optimizer=None if cfg_train.no_resume_opt else optimizer,
-            log_info=cfg_train.local_rank == 0)
-
-    # setup learning rate schedule and starting epoch
-    lr_scheduler, num_epochs = create_scheduler(cfg_train, optimizer)
-    start_epoch = 0
-    if cfg_train.start_epoch is not None:
-        # a specified start_epoch will always override the resume epoch
-        start_epoch = cfg_train.start_epoch
-    elif resume_epoch is not None:
-        start_epoch = resume_epoch
-    if lr_scheduler is not None and start_epoch > 0:
-        lr_scheduler.step(start_epoch)
-
-    # setup checkpoint saver and eval metric tracking
-    eval_metric = cfg_train.eval_metric
-    best_metric = None
-    best_epoch = None
-    output_dir = None
-    
-    exp_name = '-'.join([
-        datetime.now().strftime("%Y%m%d-%H%M%S"),
-        safe_model_name(cfg_train.model),
-        str(cfg.data_conf.img_size)
-    ])
-    
-    output_dir = get_outdir(cfg_train.output if cfg_train.output else './output/train', exp_name)
-    decreasing = True if eval_metric == 'loss' else False
-    
-    with open(os.path.join(output_dir, 'args.yaml'), 'w') as f:
-        f.write(args_text)
-
-    try:
-        for epoch in range(start_epoch, num_epochs):
-
-            train_metrics = train_one_epoch(
-                epoch, model, loader_train, optimizer, train_loss_fn, cfg_train,
-                lr_scheduler=lr_scheduler, output_dir=output_dir)
-
-            eval_metrics = validate(model, loader_eval, validate_loss_fn, cfg_train)
-            
-            if lr_scheduler is not None:
-                # step LR for next epoch
-                lr_scheduler.step(epoch + 1, eval_metrics[eval_metric])
-
-            if output_dir is not None:
-                update_summary(
-                    epoch, train_metrics, eval_metrics, os.path.join(output_dir, 'summary.csv'),
-                    write_header=best_metric is None, log_wandb=cfg_train.log_wandb and has_wandb)
-
-    except KeyboardInterrupt:
-        pass
-    if best_metric is not None:
-        _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
-
-
-def train_one_epoch(
-        epoch, model, loader, optimizer, loss_fn, args,
-        lr_scheduler=None, output_dir=None, amp_autocast=suppress, model_ema=None, mixup_fn=None):
-
-    second_order = hasattr(optimizer, 'is_second_order') and optimizer.is_second_order
-    batch_time_m = AverageMeter()
-    data_time_m = AverageMeter()
-    losses_m = AverageMeter()
-
-    model.train()
-
-    end = time.time()
-    last_idx = len(loader) - 1
-    num_updates = epoch * len(loader)
-    for batch_idx, (input, target) in enumerate(loader):
-        last_batch = batch_idx == last_idx
-        data_time_m.update(time.time() - end)
-        
-        input, target = input.cuda(), target.cuda()
-        if mixup_fn is not None:
-            input, target = mixup_fn(input, target)
-    
-        with amp_autocast():
-            output = model(input)
-            loss = loss_fn(output, target)
-
-        losses_m.update(loss.item(), input.size(0))
-
-        optimizer.zero_grad()
-    
-        loss.backward(create_graph=second_order)
-        optimizer.step()
-
-        if model_ema is not None:
-            model_ema.update(model)
-
-        torch.cuda.synchronize()
-        num_updates += 1
-        batch_time_m.update(time.time() - end)
-        if last_batch or batch_idx % cfg_train.log_interval == 0:
-            lrl = [param_group['lr'] for param_group in optimizer.param_groups]
-            lr = sum(lrl) / len(lrl)
-
-            if cfg_train.local_rank == 0:
-                print('Train: {} [{:>4d}/{} ({:>3.0f}%)]  '
-                    'Loss: {loss.val:#.4g} ({loss.avg:#.3g})  '
-                    'Time: {batch_time.val:.3f}s, {rate:>7.2f}/s  '
-                    '({batch_time.avg:.3f}s, {rate_avg:>7.2f}/s)  '
-                    'LR: {lr:.3e}  '
-                    'Data: {data_time.val:.3f} ({data_time.avg:.3f})'.format(
-                        epoch,
-                        batch_idx, len(loader),
-                        100. * batch_idx / last_idx,
-                        loss=losses_m,
-                        batch_time=batch_time_m,
-                        rate=input.size(0) / batch_time_m.val,
-                        rate_avg=input.size(0) / batch_time_m.avg,
-                        lr=lr,
-                        data_time=data_time_m))
-
-        if lr_scheduler is not None:
-            lr_scheduler.step_update(num_updates=num_updates, metric=losses_m.avg)
-
-        end = time.time()
-        # end for
-
-    if hasattr(optimizer, 'sync_lookahead'):
-        optimizer.sync_lookahead()
-
-    return OrderedDict([('loss', losses_m.avg)])
-
-
-
-def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix=''):
-    batch_time_m = AverageMeter()
-    losses_m = AverageMeter()
-    top1_m = AverageMeter()
-    top5_m = AverageMeter()
-
-    model.eval()
-
-    end = time.time()
-    last_idx = len(loader) - 1
-    with torch.no_grad():
-        for batch_idx, (input, target) in enumerate(loader):
-            last_batch = batch_idx == last_idx
-            input = input.cuda()
-            target = target.cuda()
-
-            with amp_autocast():
-                output = model(input)
-            if isinstance(output, (tuple, list)):
-                output = output[0]
-
-            loss = loss_fn(output, target)
-            acc1, acc5 = accuracy(output, target, topk=(1, 5))
-
-            
-            reduced_loss = loss.data
-
-            torch.cuda.synchronize()
-
-            losses_m.update(reduced_loss.item(), input.size(0))
-            top1_m.update(acc1.item(), output.size(0))
-            top5_m.update(acc5.item(), output.size(0))
-
-            batch_time_m.update(time.time() - end)
-            end = time.time()
-            if cfg_train.local_rank == 0 and (last_batch or batch_idx % cfg_train.log_interval == 0):
-                log_name = 'Test' + log_suffix
-                print(
-                    '{0}: [{1:>4d}/{2}]  '
-                    'Time: {batch_time.val:.3f} ({batch_time.avg:.3f})  '
-                    'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
-                    'Acc@1: {top1.val:>7.4f} ({top1.avg:>7.4f})  '
-                    'Acc@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
-                        log_name, batch_idx, last_idx, batch_time=batch_time_m,
-                        loss=losses_m, top1=top1_m, top5=top5_m))
-
-    metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg), ('top5', top5_m.avg)])
-
-    return metrics
 
 if __name__ == '__main__':
     main()

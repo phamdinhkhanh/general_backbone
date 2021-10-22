@@ -1,6 +1,8 @@
 # --------------------Config for model training
 
 from logging import debug
+
+from torchvision.transforms.transforms import Resize
 from general_backbone import scheduler
 
 
@@ -25,9 +27,6 @@ train_conf = dict(
     log_wandb=False,
     local_rank=0,
 
-    # Optimizer
-
-    
     # DataLoader
     batch_size=16,
     num_workers=8,
@@ -68,20 +67,22 @@ test_conf = dict(
 # Learn about all Albumentation Transformations, refer to link: https://albumentations.ai/docs/getting_started/transforms_and_targets/
 # Note: the order in the dictionary is matched with the processive order of transformations
 data_root = 'toydata/image_classification'
+img_size=224
 
-data_conf = dict(
-    dict_transform = dict(
-        SmallestMaxSize={'max_size': 160},
+data_conf=dict(
+    dict_transform=dict(
+        RandomResizedCrop={'width':256, 'height':256, 'scale':(0.9, 1.0), 'ratio':(0.9, 1.1), 'p':0.5},
+        ColorJitter={'brightness':0.35, 'contrast':0.5, 'saturation':0.5, 'hue':0.2, 'always_apply':False, 'p':0.5},
         ShiftScaleRotate={'shift_limit':0.05, 'scale_limit':0.05, 'rotate_limit':15, 'p':0.5},
-        RandomCrop={'height':128, 'width':128},
         RGBShift={'r_shift_limit': 15, 'g_shift_limit': 15, 'b_shift_limit': 15, 'p': 0.5},
         RandomBrightnessContrast={'p': 0.5},
         Normalize={'mean':(0.485, 0.456, 0.406), 'std':(0.229, 0.224, 0.225)},
-        ToTensorV2=None
+        Resize={'height':img_size, 'width': img_size},
+        ToTensorV2={'always_apply':True}
         ),
-    
+
     class_2_idx=None, # Dictionary link class with indice. For example: {'dog':0, 'cat':1}, Take the folder name for label If None.
-    img_size=224,
+    img_size=img_size,
     data = dict(
         train=dict(
             data_dir=data_root,

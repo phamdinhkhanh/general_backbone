@@ -418,6 +418,7 @@ class Config:
             data_root = args.data_dir,
 
             data_conf = dict(
+                dict_transform=None,
                 class_2_idx=None, # Dictionary link class with indice. For example: {'dog':0, 'cat':1}, Take the folder name for label If None.
                 img_size=args.img_size,
                 data = dict(

@@ -59,7 +59,7 @@ Inside each folder cat and dog is the images. If you want to add a new class, yo
 | ------------------------- | ----------------------------- | ---------------------------------- |
 | **Pixel-level transforms** |
 | Blur | {'blur_limit':7, 'always_apply':False, 'p':0.5} | Blur the input image using a random-sized kernel | 
-| GaussNoise | | {'var_limit':(10.0, 50.0), 'mean':0, 'per_channel':True, 'always_apply':False, 'p':0.5} | Apply gaussian noise to the input image |
+| GaussNoise | {'var_limit':(10.0, 50.0), 'mean':0, 'per_channel':True, 'always_apply':False, 'p':0.5} | Apply gaussian noise to the input image |
 | GaussianBlur | {'blur_limit':(3, 7), 'sigma_limit':0, 'always_apply':False, 'p':0.5} | Blur the input image using a Gaussian filter with a random kernel size |
 | GlassBlur | {'sigma': 0.7, 'max_delta':4, 'iterations':2, 'always_apply':False, 'mode':'fast', 'p':0.5} | Apply glass noise to the input image |
 | HueSaturationValue | {'hue_shift_limit':20, 'sat_shift_limit':30, 'val_shift_limit':20, 'always_apply':False, 'p':0.5 | Randomly change hue, saturation and value of the input image |

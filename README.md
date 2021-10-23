@@ -182,8 +182,8 @@ There are many open sources package we refered to build up `general_backbone`:
 If you find this project is useful in your reasearch, kindly consider cite:
 
 ```
-@article{genearal_ocr,
-    title={GeneralOCR:  A Comprehensive package for DeepLearning Backbone models},
+@article{genearal_backbone,
+    title={GeneralBackbone:  A handy package for implementing Deep Learning Backbone},
     author={khanhphamdinh},
     email= {phamdinhkhanh.tkt53.neu@gmail.com},
     year={2021}

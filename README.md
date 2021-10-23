@@ -105,7 +105,7 @@ for i in range(50):
     img, label = augdataset.__getitem__(i)
 ```
 
-In default, the augmentation images output is saved in `tmp/alb_img_debug` to you review before train your models. the code tests augmentation image is available in [debug/transform_debug.py](tools/transform_debug.py):
+In default, the augmentation images output is saved in `tmp/alb_img_debug` to you review before train your models. the code tests augmentation image is available in [debug/transform_debug.py](debug/transform_debug.py):
 
 ```
 conda activate gen_backbone
@@ -165,9 +165,11 @@ python tools/inference.py --img demo/cat0.jpg --config general_backbone/configs/
     - references: https://albumentations.ai/docs/examples/pytorch_classification/
 - [] New loss function: 
     - Focal Loss function; KL divergence.
-    - references: https://github.com/pytorch/pytorch/blob/3097755e7a88333c945a14ee44fda055ba276138/torch/nn/modules/loss.py; https://pytorch.org/docs/stable/nn.html#loss-functions
+    - references: 
+        - https://github.com/pytorch/pytorch/blob/3097755e7a88333c945a14ee44fda055ba276138/torch/nn/modules/loss.py
+        - https://pytorch.org/docs/stable/nn.html#loss-functions
 
-# Package reference:
+# Packages reference:
 
 There are many open sources package we refered to build up `general_backbone`:
 

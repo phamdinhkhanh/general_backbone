@@ -8,6 +8,7 @@ facilitates implementing deep neural-network backbones, data augmentations, opti
 - optimizers
 - schedulers
 - data types
+- [x] visualizations
 
 # Installation
 
@@ -114,7 +115,7 @@ python tools/transform_debug.py
 ## Train model
 
 
-To train model, you run file `tools/train.py`. There are variaty of config for your training such as `--model, --batch_size, --opt, --loss, --sched`.
+To train model, you run file `tools/train.py`. There are variaty of config for your training such as `--model, --batch_size, --opt, --loss, --sched`. We supply to you a standard configuration file to train your model through `--config`. [general_backbone/configs/image_clf_config.py](general_backbone/configs/image_clf_config.py) is for image classification task. You can change value inside this file or add new parameter as you want but without changing the name and structure of file.
 
 ```
 python3 tools/train.py --config general_backbone/configs/image_clf_config.py
@@ -133,7 +134,16 @@ Test: [   0/29]  Time: 0.537 (0.537)  Loss:  0.3071 (0.3071)  Acc@1: 87.5000 (87
 Test: [  29/29]  Time: 0.043 (0.066)  Loss:  0.1036 (0.1876)  Acc@1: 100.0000 (93.9583)  Acc@5: 100.0000 (100.0000)
 ```
 
-You can study about config parameters in [training](docs/training.md)
+Table of config parameters is in [training](docs/training.md).
+
+Your model checkpoint and log are saved in the same path of `--output` directory. A tensorboard visualization is created in order to facilitate manage and control training process. As default, folder of tensorboard is `runs` that insides `--output`. The `loss, accuracy, learning rate` and `batch time` on both train and test are logged:
+
+```
+tensorboard --logdir checkpoint/resnet50/20211023-092651-resnet50-224/runs/
+```
+
+![](docs/imgs/tensorboard.png)
+
 
 # Inference
 
@@ -144,6 +154,7 @@ You can study about config parameters in [training](docs/training.md)
 - [x] code setup.py
 - [x] conda virtual environment setup
 - [x] Introduce group of CNN models support
+- [x] Visualization training results
 - [] Table ranking model performances.
 - [x] Support new type of Datasets: You can change the augmentation styles:
     - references: https://albumentations.ai/docs/examples/pytorch_classification/

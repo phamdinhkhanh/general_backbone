@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import torch
+from torch.utils.tensorboard import SummaryWriter, writer
 import datetime
 from general_backbone import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 import yaml
@@ -23,7 +24,6 @@ import torch
 import torch.nn as nn
 from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from torch.utils.data.dataloader import DataLoader
-import torchvision
 from general_backbone.data import create_dataset, create_loader, Mixup, FastCollateMixup, AugMixDataset
 from general_backbone.models import create_model, safe_model_name 
 from general_backbone.utils import resume_checkpoint, load_checkpoint, model_parameters
@@ -303,17 +303,23 @@ def main():
     output_dir = get_outdir(cfg_train.output if cfg_train.output else './output/train', exp_name)
     decreasing = True if eval_metric == 'loss' else False
     
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+
     with open(os.path.join(output_dir, 'args.yaml'), 'w') as f:
         f.write(args_text)
 
+    log_dir = os.path.join(output_dir, 'runs')
+
+    writer = SummaryWriter(log_dir=log_dir)
     try:
         for epoch in range(start_epoch, num_epochs):
 
             train_metrics = train_one_epoch(
                 epoch, model, loader_train, optimizer, train_loss_fn, cfg_train,
-                lr_scheduler=lr_scheduler, output_dir=output_dir)
+                lr_scheduler=lr_scheduler, output_dir=output_dir, writer=writer)
 
-            eval_metrics = validate(model, loader_eval, validate_loss_fn, cfg_train)
+            eval_metrics = validate(epoch, model, loader_eval, validate_loss_fn, cfg_train, writer=writer)
             
             if lr_scheduler is not None:
                 # step LR for next epoch
@@ -332,7 +338,7 @@ def main():
 
 def train_one_epoch(
         epoch, model, loader, optimizer, loss_fn, args,
-        lr_scheduler=None, output_dir=None, amp_autocast=suppress, model_ema=None, mixup_fn=None):
+        lr_scheduler=None, output_dir=None, amp_autocast=suppress, model_ema=None, mixup_fn=None, writer=None, **kargs):
 
     second_order = hasattr(optimizer, 'is_second_order') and optimizer.is_second_order
     batch_time_m = AverageMeter()
@@ -395,7 +401,10 @@ def train_one_epoch(
 
         end = time.time()
         # end for
-
+    # update writer
+    writer.add_scalar('Loss/train', losses_m.avg, epoch)
+    writer.add_scalar('Time/train/batch_time', batch_time_m.avg, epoch)
+    writer.add_scalar('Lr/train', lr, epoch)
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()
 
@@ -403,7 +412,7 @@ def train_one_epoch(
 
 
 
-def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix=''):
+def validate(epoch, model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='', writer=None, **kargs):
     batch_time_m = AverageMeter()
     losses_m = AverageMeter()
     top1_m = AverageMeter()
@@ -450,7 +459,11 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
                         loss=losses_m, top1=top1_m, top5=top5_m))
 
     metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg), ('top5', top5_m.avg)])
-
+    # updat writer
+    writer.add_scalar('Loss/test', losses_m.avg, epoch)
+    writer.add_scalar('Time/test/batch_time', batch_time_m.avg, epoch)
+    writer.add_scalar('Accuracy/test/top1', top1_m.avg, epoch)
+    writer.add_scalar('Accuracy/test/top5', top5_m.avg, epoch)
     return metrics
 
 if __name__ == '__main__':

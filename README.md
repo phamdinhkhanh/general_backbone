@@ -1,6 +1,6 @@
 # Introduction
 
-Nowadays, the training of Deep Learning models is fragmented and unified.  When AI engineers face up with one specific task, the common way was to find a repo and reimplement them. Thus, it is really hard for them to speed up the implementation of a big project in which requires a continuous try-end-error process to find the best model. `general_backbone` is launched to facilitate for implementation of deep neural-network backbones, data augmentations, optimizers, and learning schedulers that all in one package. Finally, you can quick-win the training process.
+Nowadays, the training of Deep Learning models is fragmented and unified.  When AI engineers face up with one specific task, the common way was to find a repo and reimplement them. Thus, it is really hard for them to speed up the implementation of a big project in which requires a continuous try-end-error process to find the best model. `general_backbone` is launched to facilitate for implementation of deep neural-network backbones, data augmentations, optimizers, and learning schedulers that all in one package. Finally, you can quick-win the training process. Below are these supported sectors in the current version:
 
 - [x] backbones
 - loss functions
@@ -50,7 +50,7 @@ toydata/
 
 Inside each folder cat and dog is the images. If you want to add a new class, you just need to create a new folder with the folder's name is label name inside `train` and `test` folder.
 
-## Data Augmentation
+# Data Augmentation
 
 `general_backbone` package support many augmentations style for training. It is efficient and important to improve model accuracy. Some of common augumentations is below:
 

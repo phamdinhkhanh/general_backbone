@@ -14,7 +14,7 @@ exec(open('general_backbone/__version__.py').read())
 setup(
     name='general_backbone',
     version=__version__,
-    description='(Unofficial) PyTorch Image Models',
+    description='General Backbones of Deep Learning models',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/phamdinhkhanh/general_backbone',

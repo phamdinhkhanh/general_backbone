@@ -1,6 +1,6 @@
 # Introduction
 
-facilitates implementing deep neural-network backbones, data augmentations, optimizers and learning schedulers.
+Nowadays, the training of Deep Learning models is fragmented and unified.  When AI engineers face up with one specific task, the common way was to find a repo and reimplement them. Thus, it is really hard for them to speed up the implementation of a big project in which requires a continuous try-end-error process to find the best model. `general_backbone` is launched to facilitate for implementation of deep neural-network backbones, data augmentations, optimizers, and learning schedulers that all in one package. Finally, you can quick-win the training process.
 
 - [x] backbones
 - loss functions
@@ -14,9 +14,7 @@ facilitates implementing deep neural-network backbones, data augmentations, opti
 
 Refer to [docs/installation.md](docs/installation.md) for installion of `general_backbone` package.
 
-# Train model
-
-## Model backone
+# Model backbone
 
 Currently, `general_backbone` supports more than 70 type of **resnet** models such as: `resnet18, resnet34, resnet50, resnet101, resnet152, resnext50`.
 
@@ -35,7 +33,7 @@ Results
 
 To select your backbone type, you set model=`resnet50` in train_config of your config file. An example config file [general_backbone/configs/image_clf_config.py](general_backbone/configs/image_clf_config.py).
 
-## Dataset
+# Dataset
 
 A toy dataset is provided at `toydata` for your test training. It has a structure organized as below:
 
@@ -112,7 +110,7 @@ conda activate gen_backbone
 python debug/transform_debug.py
 ```
 
-## Train model
+# Train model
 
 
 To train model, you run file `tools/train.py`. There are variaty of config for your training such as `--model, --batch_size, --opt, --loss, --sched`. We supply to you a standard configuration file to train your model through `--config`. [general_backbone/configs/image_clf_config.py](general_backbone/configs/image_clf_config.py) is for image classification task. You can change value inside this file or add new parameter as you want but without changing the name and structure of file.

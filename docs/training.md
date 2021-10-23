@@ -30,7 +30,8 @@ The meaning of config file parameters and arguments parser are the same as below
 | **Checkpoint**                                  |
 | `--output` | str | Path to output folder (default: current directory folder) |
 | `--initial-checkpoint` | str | Initialize model from this checkpoint (default: none) |
-| `--checkpoint-hist`| str | Number of checkpoints to keep (default: 10) |
+| `--checkpoint-hist`| int | Number of checkpoints to keep (default: 10) |
+| `--recovery_interval` | int | Number of interval checkpoint to save (default:10) | 
 | `--resume`| str | Resume full model and optimizer state from checkpoint (default: none) |
 | `--no-resume-opt` | str | prevent resume of optimizer state when resuming model |
 | **Logging**                                  |

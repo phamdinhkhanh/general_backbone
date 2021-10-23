@@ -147,6 +147,11 @@ tensorboard --logdir checkpoint/resnet50/20211023-092651-resnet50-224/runs/
 
 # Inference
 
+To inference model, you should pass `--img`, `--config` and `--initial-checkpoint`.
+
+```
+python tools/inference.py --img demo/cat0.jpg --config general_backbone/configs/image_clf_config.py --initial-checkpoint checkpoint.pth.tar
+```
 
 
 # TODO

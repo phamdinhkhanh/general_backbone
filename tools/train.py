@@ -26,7 +26,7 @@ from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from torch.utils.data.dataloader import DataLoader
 from general_backbone.data import create_dataset, create_loader, Mixup, FastCollateMixup, AugMixDataset
 from general_backbone.models import create_model, safe_model_name 
-from general_backbone.utils import resume_checkpoint, load_checkpoint, model_parameters
+from general_backbone.utils import metrics, resume_checkpoint, load_checkpoint, model_parameters
 from general_backbone.layers import convert_splitbn_model
 from general_backbone.utils import *
 from general_backbone.loss import *
@@ -220,7 +220,7 @@ def main():
         args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
 
     if cfg_train.local_rank == 0:
-        print(f'Model {safe_model_name(args.model)} created, param count:{sum([m.numel() for m in model.parameters()])}')    
+        print(f'Model {safe_model_name(cfg_train.model)} created, param count:{sum([m.numel() for m in model.parameters()])}')    
 
     dataset_train = AugmentationDataset(data_dir=cfg.data_root,
                             name_split=data_config_train.name_split,
@@ -302,7 +302,11 @@ def main():
     
     output_dir = get_outdir(cfg_train.output if cfg_train.output else './output/train', exp_name)
     decreasing = True if eval_metric == 'loss' else False
-    
+    saver = CheckpointSaver(
+            model=model, optimizer=optimizer, args=cfg, 
+            checkpoint_dir=output_dir, 
+            max_history=cfg_train.checkpoint_hist)
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir, exist_ok=True)
 
@@ -317,7 +321,7 @@ def main():
 
             train_metrics = train_one_epoch(
                 epoch, model, loader_train, optimizer, train_loss_fn, cfg_train,
-                lr_scheduler=lr_scheduler, output_dir=output_dir, writer=writer)
+                lr_scheduler=lr_scheduler, output_dir=output_dir, writer=writer, saver=saver)
 
             eval_metrics = validate(epoch, model, loader_eval, validate_loss_fn, cfg_train, writer=writer)
             
@@ -338,7 +342,8 @@ def main():
 
 def train_one_epoch(
         epoch, model, loader, optimizer, loss_fn, args,
-        lr_scheduler=None, output_dir=None, amp_autocast=suppress, model_ema=None, mixup_fn=None, writer=None, **kargs):
+        lr_scheduler=None, output_dir=None, amp_autocast=suppress, 
+        model_ema=None, mixup_fn=None, writer=None, saver=None, **kargs):
 
     second_order = hasattr(optimizer, 'is_second_order') and optimizer.is_second_order
     batch_time_m = AverageMeter()
@@ -405,6 +410,15 @@ def train_one_epoch(
     writer.add_scalar('Loss/train', losses_m.avg, epoch)
     writer.add_scalar('Time/train/batch_time', batch_time_m.avg, epoch)
     writer.add_scalar('Lr/train', lr, epoch)
+
+    # saver
+    if saver is not None:
+        if cfg_train.recovery_interval:
+            if epoch % cfg_train.recovery_interval == 0:
+                saver.save_checkpoint(epoch, metric=losses_m.avg)
+        else:
+            saver.save_checkpoint(epoch, metric=losses_m.avg)
+
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()
 

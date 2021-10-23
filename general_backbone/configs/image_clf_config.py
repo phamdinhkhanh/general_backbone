@@ -1,23 +1,18 @@
 # Copyright (c) general_backbone. All rights reserved.
 # --------------------Config for model training------------------------
-from logging import debug
-
-from torchvision.transforms.transforms import Resize
-from general_backbone import scheduler
-
-
 train_conf = dict(
     # General config
-    model='resnet50',
+    model='resnet18',
     epochs=300,
     start_epoch=0,
     pretrained=True,
-    num_classes=1000,    
+    num_classes=2,    
     eval_metric='top1',
 
     # Checkpoint
     output='checkpoint/resnet50',
     checkpoint_hist=10,
+    recovery_interval=10,
     initial_checkpoint=None,
     resume=None,
     no_resume_opt=False,
@@ -35,7 +30,7 @@ train_conf = dict(
     shuffle=True,
 
     # Learning rate
-    lr=0.0005,
+    lr=0.001,
     lr_noise_pct=0.67,
     lr_noise_std=1.0,
     lr_cycle_mul=1.0,

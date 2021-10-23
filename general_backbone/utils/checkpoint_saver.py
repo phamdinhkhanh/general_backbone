@@ -105,7 +105,7 @@ class CheckpointSaver:
             'version': 2,  # version < 2 increments epoch before save
         }
         if self.args is not None:
-            save_state['arch'] = self.args.model
+            save_state['arch'] = self.args.train_conf.model
             save_state['args'] = self.args
         if self.amp_scaler is not None:
             save_state[self.amp_scaler.state_dict_key] = self.amp_scaler.state_dict()

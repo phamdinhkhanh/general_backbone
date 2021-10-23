@@ -7,6 +7,6 @@ from torchsummary import summary
 if __name__ == '__main__':
     print('hello world!')
     device = 'cuda:0'
-    model = resnet18(pretrained=True).to(device)
+    model = resnet18(num_classes=2, pretrained=True).to(device)
     summary(model, (3, 224, 224))
     print(default_cfgs.keys())

@@ -3,7 +3,9 @@ from general_backbone.utils.registry import is_model, is_model_in_modules, model
 from general_backbone.utils.helpers import load_checkpoint
 from .layers import set_layer_config
 from general_backbone.utils.hub import load_model_config_from_hf
-
+from general_backbone import list_models
+from torchsummary import summary
+from torch import nn
 
 def split_model_name(model_name):
     model_split = model_name.split(':', 1)
@@ -30,6 +32,7 @@ def create_model(
         scriptable=None,
         exportable=None,
         no_jit=None,
+        num_classes=1000,
         **kwargs):
     """Create a model
 
@@ -76,12 +79,90 @@ def create_model(
     if is_model(model_name):
         create_fn = model_entrypoint(model_name)
     else:
-        raise RuntimeError('Unknown model (%s)' % model_name)
+        raise RuntimeError('Unknown model ({}). Currently support {}'.format(model_name, list_models()))
 
     with set_layer_config(scriptable=scriptable, exportable=exportable, no_jit=no_jit):
         model = create_fn(pretrained=pretrained, **kwargs)
+
+    # Customize model layers
+    if model_name in list_models()['resnet']:
+        model = initialize_model(model_ft=model, model_group='resnet', num_classes=num_classes)
+
+    # summary(model, (3, 224, 224), device='cpu')
 
     if checkpoint_path:
         load_checkpoint(model, checkpoint_path)
 
     return model
+
+def initialize_model(model_ft, model_group, num_classes, feature_extract=False):
+    # Initialize these variables which will be set in this if statement. Each of these
+    #   variables is model specific.
+    input_size = 0
+
+    if model_group == "resnet":
+        """ Resnet18
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc = nn.Linear(num_ftrs, num_classes)
+        input_size = 224
+
+    elif model_group == "alexnet":
+        """ Alexnet
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        num_ftrs = model_ft.classifier[6].in_features
+        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
+        input_size = 224
+
+    elif model_group == "vgg":
+        """ VGG11_bn
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        num_ftrs = model_ft.classifier[6].in_features
+        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
+        input_size = 224
+
+    elif model_group == "squeezenet":
+        """ Squeezenet
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        model_ft.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1,1), stride=(1,1))
+        model_ft.num_classes = num_classes
+        input_size = 224
+
+    elif model_group == "densenet":
+        """ Densenet
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        num_ftrs = model_ft.classifier.in_features
+        model_ft.classifier = nn.Linear(num_ftrs, num_classes)
+        input_size = 224
+
+    elif model_group == "inception":
+        """ Inception v3
+        Be careful, expects (299,299) sized images and has auxiliary output
+        """
+        set_parameter_requires_grad(model_ft, feature_extract)
+        # Handle the auxilary net
+        num_ftrs = model_ft.AuxLogits.fc.in_features
+        model_ft.AuxLogits.fc = nn.Linear(num_ftrs, num_classes)
+        # Handle the primary net
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc = nn.Linear(num_ftrs,num_classes)
+        input_size = 299
+
+    else:
+        print("Invalid model name, exiting...")
+        exit()
+    return model_ft
+
+def set_parameter_requires_grad(model, feature_extracting):
+    """
+    This helper function sets the .requires_grad attribute of the parameters
+     in the model to False when we are feature extracting.
+    """
+    if feature_extracting:
+        for param in model.parameters():
+            param.requires_grad = False

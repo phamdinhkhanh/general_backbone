@@ -109,7 +109,7 @@ In default, the augmentation images output is saved in `tmp/alb_img_debug` to yo
 
 ```
 conda activate gen_backbone
-python tools/transform_debug.py
+python debug/transform_debug.py
 ```
 
 ## Train model

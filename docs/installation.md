@@ -1,3 +1,5 @@
+# Installation
+
 1. Create virtual environment
 
 ```
@@ -13,7 +15,13 @@ The dependent packages for `general_backbone` are listed in `requirements.txt`:
 torch>=1.4.0
 torchvision>=0.5.0
 pyyaml
+addict
+yapf
 huggingface_hub
+tensorboard
+torchvision
+torchsummary
+albumentations
 ```
 
 You simply install by running:

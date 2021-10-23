@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """EvoNormB0 (Batched) and EvoNormS0 (Sample) in PyTorch
 
 An attempt at getting decent performing EvoNorms running in PyTorch.
@@ -6,7 +7,6 @@ in terms of memory usage and throughput (roughly 5x mem, 1/2 - 1/3x speed).
 
 Still very much a WIP, fiddling with buffer usage, in-place/jit optimizations, and layouts.
 
-Copyright general_backbone
 """
 
 import torch

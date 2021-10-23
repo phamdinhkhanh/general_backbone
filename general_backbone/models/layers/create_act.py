@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Activation Factory
-Copyright general_backbone
 """
 from typing import Union, Callable, Type
 

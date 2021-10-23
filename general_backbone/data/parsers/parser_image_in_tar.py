@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ A dataset parser that reads tarfile based datasets
 
 This parser can read and extract image samples from:
@@ -6,8 +7,6 @@ This parser can read and extract image samples from:
 * a tar of tars containing image files
 
 Labels are based on the combined folder and/or tar name structure.
-
-Copyright general_backbone
 """
 import os
 import tarfile

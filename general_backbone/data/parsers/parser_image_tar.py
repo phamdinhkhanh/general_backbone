@@ -1,9 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ A dataset parser that reads single tarfile based datasets
 
 This parser can read datasets consisting if a single tarfile containing images.
 I am planning to deprecated it in favour of ParerImageInTar.
-
-Copyright general_backbone
 """
 import os
 import tarfile

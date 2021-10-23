@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Exponential Moving Average (EMA) of model updates
 
-Copyright general_backbone
 """
 import logging
 from collections import OrderedDict

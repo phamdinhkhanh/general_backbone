@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .activations import *
 from .adaptive_avgmax_pool import \
     adaptive_avgmax_pool2d, select_adaptive_pool2d, AdaptiveAvgMaxPool2d, SelectAdaptivePool2d

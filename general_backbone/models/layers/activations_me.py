@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Activations (memory-efficient w/ custom autograd)
 
 A collection of activations fn and modules with a common interface so that they can
@@ -6,7 +7,6 @@ easily be swapped. All have an `inplace` arg even if not used.
 These activations are not compatible with jit scripting or ONNX export of the model, please use either
 the JIT or basic versions of the activations.
 
-Copyright general_backbone
 """
 
 import torch

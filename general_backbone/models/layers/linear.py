@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Linear layer (alternate definition)
 """
 import torch

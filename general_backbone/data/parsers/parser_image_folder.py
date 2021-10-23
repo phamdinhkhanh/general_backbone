@@ -1,9 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ A dataset parser that reads images from folders
 
 Folders are scannerd recursively to find image files. Labels are based
 on the folder hierarchy, just leaf folders by default.
-
-Copyright general_backbone
 """
 import os
 

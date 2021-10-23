@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Model / state_dict utils
 
-Copyright general_backbone
 """
 from logging import root
 from typing import Sequence

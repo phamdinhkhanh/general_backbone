@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Squeeze-and-Excitation Channel Attention
 
 An SE implementation originally based on PyTorch SE-Net impl.
@@ -8,7 +9,6 @@ Paper: `Squeeze-and-Excitation Networks` - https://arxiv.org/abs/1709.01507
 Also included is Effective Squeeze-Excitation (ESE).
 Paper: `CenterMask : Real-Time Anchor-Free Instance Segmentation` - https://arxiv.org/abs/1911.06667
 
-Copyright general_backbone
 """
 from torch import nn as nn
 

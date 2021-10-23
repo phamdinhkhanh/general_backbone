@@ -1,5 +1,5 @@
-# --------------------Config for model training
-
+# Copyright (c) general_backbone. All rights reserved.
+# --------------------Config for model training------------------------
 from logging import debug
 
 from torchvision.transforms.transforms import Resize

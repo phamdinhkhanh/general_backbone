@@ -1,9 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Loader Factory, Fast Collate, CUDA Prefetcher
 
 Prefetcher and Fast Collate inspired by NVIDIA APEX example at
 https://github.com/NVIDIA/apex/commit/d5e2bb4bdeedd27b1dfaf5bb2b24d6c000dee9be#diff-cf86c282ff7fba81fad27a559379d5bf
-
-Copyright general_backbone
 """
 import random
 from functools import partial

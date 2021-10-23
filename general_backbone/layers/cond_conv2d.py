@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch Conditionally Parameterized Convolution (CondConv)
 
 Paper: CondConv: Conditionally Parameterized Convolutions for Efficient Inference

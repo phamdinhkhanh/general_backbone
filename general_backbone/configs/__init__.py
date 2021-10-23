@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .constants import *
 from .resnet_cfg import resnet_cfg
 

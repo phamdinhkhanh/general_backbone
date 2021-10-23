@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Attention Pool 2D
 
 Implementations of 2D spatial feature pooling using multi-head attention instead of average pool.
@@ -5,7 +6,6 @@ Implementations of 2D spatial feature pooling using multi-head attention instead
 Based on idea in CLIP by OpenAI, licensed Apache 2.0
 https://github.com/openai/CLIP/blob/3b473b0e682c091a9e53623eebc1ca1657385717/clip/model.py
 
-Copyright general_backbone
 """
 import math
 from typing import List, Union, Tuple

@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 import math
 import torch
 from torch.utils.data import Sampler

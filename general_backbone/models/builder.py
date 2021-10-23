@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from general_backbone.utils.registry import is_model, is_model_in_modules, model_entrypoint
 from general_backbone.utils.helpers import load_checkpoint
 from .layers import set_layer_config

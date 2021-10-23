@@ -1,10 +1,9 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Dataset parser interface that wraps TFDS datasets
 
 Wraps many (most?) TFDS image-classification datasets
 from https://github.com/tensorflow/datasets
 https://www.tensorflow.org/datasets/catalog/overview#image_classification
-
-Copyright general_backbone
 """
 import os
 import io

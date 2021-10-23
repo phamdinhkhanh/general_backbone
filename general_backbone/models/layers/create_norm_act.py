@@ -1,10 +1,9 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ NormAct (Normalizaiton + Activation Layer) Factory
 
 Create norm + act combo modules that attempt to be backwards compatible with separate norm + act
 isntances in models. Where these are used it will be possible to swap separate BN + act layers with
 combined modules like IABN or EvoNorms.
-
-Copyright general_backbone
 """
 import types
 import functools

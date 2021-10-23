@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Split BatchNorm
 
 A PyTorch BatchNorm layer that splits input batch into N equal parts and passes each through
@@ -9,7 +10,6 @@ This allows easily removing the auxiliary BN layers after training to efficientl
 achieve the 'Auxiliary BatchNorm' as described in the AdvProp Paper, section 4.2,
 'Disentangled Learning via An Auxiliary BN'
 
-Copyright general_backbone
 """
 import torch
 import torch.nn as nn

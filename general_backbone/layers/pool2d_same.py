@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ AvgPool2d w/ Same Padding
 
 

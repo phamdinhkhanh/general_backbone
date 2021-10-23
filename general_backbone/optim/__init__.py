@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from torch import optim
 from .adabelief import AdaBelief
 from .adafactor import Adafactor

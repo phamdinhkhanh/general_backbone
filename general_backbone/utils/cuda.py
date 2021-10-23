@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ CUDA / AMP utils
 
-Copyright general_backbone
 """
 import torch
 

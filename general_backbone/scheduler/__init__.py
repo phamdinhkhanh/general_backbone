@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .cosine_lr import CosineLRScheduler
 from .multistep_lr import MultiStepLRScheduler
 from .plateau_lr import PlateauLRScheduler

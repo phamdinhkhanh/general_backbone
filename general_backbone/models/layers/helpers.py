@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Layer/Module Helpers
 
-Copyright general_backbone
 """
 from itertools import repeat
 import collections.abc

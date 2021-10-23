@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .registry import (register_model, list_models, is_model, 
                         model_entrypoint, list_modules, is_model_in_modules,
                         is_model_default_key, has_model_default_key, 

@@ -1,9 +1,9 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Random Erasing (Cutout)
 
 Originally inspired by impl at https://github.com/zhunzhong07/Random-Erasing, Apache 2.0
 Copyright Zhun Zhong & Liang Zheng
 
-Copyright general_backbone
 """
 import random
 import math

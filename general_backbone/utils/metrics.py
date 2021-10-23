@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Eval metrics and related
 
-Copyright general_backbone
 """
 
 

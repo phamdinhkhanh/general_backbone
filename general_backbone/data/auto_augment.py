@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ AutoAugment, RandAugment, and AugMix for PyTorch
 
 This code implements the searched ImageNet policies with various tweaks and improvements and
@@ -14,8 +15,6 @@ Papers:
     Learning Data Augmentation Strategies for Object Detection - https://arxiv.org/abs/1906.11172
     RandAugment: Practical automated data augmentation... - https://arxiv.org/abs/1909.13719
     AugMix: A Simple Data Processing Method to Improve Robustness and Uncertainty - https://arxiv.org/abs/1912.02781
-
-Copyright general_backbone
 """
 import random
 import math

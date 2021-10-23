@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Classifier head and layer factory
 
-Copyright general_backbone
 """
 from torch import nn as nn
 from torch.nn import functional as F

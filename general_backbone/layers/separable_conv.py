@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Depthwise Separable Conv Modules
 
 Basic DWS convs. Other variations of DWS exist with batch norm or activations between the

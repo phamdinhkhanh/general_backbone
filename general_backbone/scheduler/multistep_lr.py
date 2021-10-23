@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ MultiStep LR Scheduler
 
 Basic multi step LR schedule with warmup, noise.

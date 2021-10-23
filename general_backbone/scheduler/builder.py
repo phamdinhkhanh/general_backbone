@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Scheduler Factory
-Copyright general_backbone
 """
 from .cosine_lr import CosineLRScheduler
 from .multistep_lr import MultiStepLRScheduler

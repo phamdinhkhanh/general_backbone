@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 import os
 from functools import partial
 from .dataset import IterableImageDataset, ImageDataset

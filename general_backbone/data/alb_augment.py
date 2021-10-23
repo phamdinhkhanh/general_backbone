@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from genericpath import exists
 from shutil import Error, ignore_patterns
 import numpy as np

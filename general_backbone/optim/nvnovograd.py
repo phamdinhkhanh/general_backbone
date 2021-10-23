@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Nvidia NovoGrad Optimizer.
 Original impl by Nvidia from Jasper example:
     - https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechRecognition/Jasper

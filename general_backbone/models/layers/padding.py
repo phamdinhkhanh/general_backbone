@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Padding Helpers
-
-Copyright general_backbone
 """
 import math
 from typing import List, Tuple

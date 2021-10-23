@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Convolution with Weight Standardization (StdConv and ScaledStdConv)
 
 StdConv:
@@ -13,8 +14,6 @@ ScaledStdConv:
 Paper: `Characterizing signal propagation to close the performance gap in unnormalized ResNets`
     - https://arxiv.org/abs/2101.08692
 Official Deepmind JAX code: https://github.com/deepmind/deepmind-research/tree/master/nfnets
-
-Hacked together by / copyright Ross Wightman, 2021.
 """
 import torch
 import torch.nn as nn

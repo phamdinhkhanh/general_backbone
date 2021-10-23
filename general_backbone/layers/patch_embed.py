@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Image to Patch Embedding using Conv2d
 
 A convolution based approach to patchifying a 2D image w/ embedding projection.

@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Bilinear-Attention-Transform and Non-Local Attention
 
 Paper: `Non-Local Neural Networks With Grouped Bilinear Attentional Transforms`

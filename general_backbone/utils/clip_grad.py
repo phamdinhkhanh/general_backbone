@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 import torch
 
 from .agc import adaptive_clip_grad

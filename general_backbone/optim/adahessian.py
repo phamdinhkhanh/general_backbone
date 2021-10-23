@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ AdaHessian Optimizer
 
 Lifted from https://github.com/davda54/ada-hessian/blob/master/ada_hessian.py

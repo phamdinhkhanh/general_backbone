@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Checkpoint Saver
 
 Track top-n training checkpoints and maintain recovery checkpoints on specified intervals.
 
-Copyright general_backbone
 """
 
 import glob

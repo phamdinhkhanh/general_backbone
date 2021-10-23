@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Step Scheduler
 
 Basic step LR schedule with warmup, noise.
 
-Copyright general_backbone
 """
 import math
 import torch

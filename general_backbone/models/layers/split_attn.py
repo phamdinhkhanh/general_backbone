@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Split Attention Conv2d (for ResNeSt Models)
 
 Paper: `ResNeSt: Split-Attention Networks` - /https://arxiv.org/abs/2004.08955

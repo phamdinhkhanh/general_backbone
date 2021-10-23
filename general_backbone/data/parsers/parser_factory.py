@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 import os
 
 from .parser_image_folder import ParserImageFolder

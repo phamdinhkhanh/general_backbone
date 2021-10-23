@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .builder import create_dataset, _search_split
 from .loader import create_loader
 from .dataset import ImageDataset, IterableImageDataset, AugMixDataset

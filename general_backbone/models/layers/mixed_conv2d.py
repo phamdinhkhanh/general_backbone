@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch Mixed Convolution
 
 Paper: MixConv: Mixed Depthwise Convolutional Kernels (https://arxiv.org/abs/1907.09595)
 
-Copyright general_backbone
 """
 
 import torch

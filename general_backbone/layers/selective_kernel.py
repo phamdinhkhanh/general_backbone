@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Selective Kernel Convolution/Attention
 
 Paper: Selective Kernel Networks (https://arxiv.org/abs/1903.06586)

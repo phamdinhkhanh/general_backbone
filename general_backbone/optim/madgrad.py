@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch MADGRAD optimizer
 
 MADGRAD: https://arxiv.org/abs/2101.11075

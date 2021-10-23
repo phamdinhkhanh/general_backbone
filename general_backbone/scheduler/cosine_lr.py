@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Cosine Scheduler
 
 Cosine LR schedule with warmup, cycle/restarts, noise, k-decay.
 
-Copyright general_backbone
 """
 import logging
 import math

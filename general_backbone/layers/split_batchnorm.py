@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Split BatchNorm
 
 A PyTorch BatchNorm layer that splits input batch into N equal parts and passes each through

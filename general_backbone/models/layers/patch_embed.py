@@ -1,10 +1,10 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Image to Patch Embedding using Conv2d
 
 A convolution based approach to patchifying a 2D image w/ embedding projection.
 
 Based on the impl in https://github.com/google-research/vision_transformer
 
-Copyright general_backbone
 """
 
 from torch import nn as nn

@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Summary utilities
 
-Copyright general_backbone
 """
 import csv
 import os

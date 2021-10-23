@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Plateau Scheduler
 
 Adapts PyTorch plateau scheduler and allows application of noise, warmup.
 
-Copyright general_backbone
 """
 import torch
 

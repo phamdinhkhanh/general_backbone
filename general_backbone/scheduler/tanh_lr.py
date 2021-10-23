@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ TanH Scheduler
 
 TanH schedule with warmup, cycle/restarts, noise.
 
-Copyright general_backbone
 """
 import logging
 import math

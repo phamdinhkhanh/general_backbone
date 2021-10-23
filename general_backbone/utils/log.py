@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Logging helpers
 
-Copyright general_backbone
 """
 import logging
 import logging.handlers

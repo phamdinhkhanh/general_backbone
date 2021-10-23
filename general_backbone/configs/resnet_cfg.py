@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 from .constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 
 def resnet_cfg(url='', **kwargs):

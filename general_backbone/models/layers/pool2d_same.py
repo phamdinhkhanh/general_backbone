@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ AvgPool2d w/ Same Padding
-
-Copyright general_backbone
 """
 import torch
 import torch.nn as nn

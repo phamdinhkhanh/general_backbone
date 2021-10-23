@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Bottleneck Self Attention (Bottleneck Transformers)
 
 Paper: `Bottleneck Transformers for Visual Recognition` - https://arxiv.org/abs/2101.11605
@@ -12,7 +13,6 @@ Based on ref gist at: https://gist.github.com/aravindsrinivas/56359b79f0ce4449bc
 
 This impl is a WIP but given that it is based on the ref gist likely not too far off.
 
-Copyright general_backbone
 """
 from typing import List
 

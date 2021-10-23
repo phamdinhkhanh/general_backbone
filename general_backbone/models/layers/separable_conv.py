@@ -1,9 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Depthwise Separable Conv Modules
 
 Basic DWS convs. Other variations of DWS exist with batch norm or activations between the
 DW and PW convs such as the Depthwise modules in MobileNetV2 / EfficientNet and Xception.
-
-Copyright general_backbone
 """
 from torch import nn as nn
 

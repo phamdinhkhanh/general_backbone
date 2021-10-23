@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Adaptive Gradient Clipping
 
 An impl of AGC, as per (https://arxiv.org/abs/2102.06171):
@@ -12,8 +13,6 @@ An impl of AGC, as per (https://arxiv.org/abs/2102.06171):
 Code references:
   * Official JAX impl (paper authors): https://github.com/deepmind/deepmind-research/tree/master/nfnets
   * Phil Wang's PyTorch gist: https://gist.github.com/lucidrains/0d6560077edac419ab5d3aa29e674d5c
-
-Copyright general_backbone
 """
 import torch
 

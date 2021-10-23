@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ DropBlock, DropPath
 
 PyTorch implementations of DropBlock and DropPath (Stochastic Depth) regularization layers.

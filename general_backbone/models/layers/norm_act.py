@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Normalization + Activation Layers
 """
 import torch

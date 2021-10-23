@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Activations
 
 A collection of jit-scripted activations fn and modules with a common interface so that they can
@@ -7,7 +8,6 @@ All jit scripted activations are lacking in-place variations on purpose, scripte
 currently work across in-place op boundaries, thus performance is equal to or less than the non-scripted
 versions if they contain in-place ops.
 
-Copyright general_backbone
 """
 
 import torch

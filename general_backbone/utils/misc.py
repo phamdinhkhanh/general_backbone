@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Misc utils
 
-Copyright general_backbone
 """
 import re
 from importlib import import_module

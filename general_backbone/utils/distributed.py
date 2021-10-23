@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Distributed training/validation utils
 
-Copyright general_backbone
 """
 import torch
 from torch import distributed as dist

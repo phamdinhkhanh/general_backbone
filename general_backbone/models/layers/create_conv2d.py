@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Create Conv2d Factory Method
-
-Copyright general_backbone
 """
 
 from .mixed_conv2d import MixedConv2d

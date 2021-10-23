@@ -1,4 +1,4 @@
-
+# Copyright (c) general_backbone. All rights reserved.
 from pathlib import Path
 
 from general_backbone.utils import is_list_of, is_str

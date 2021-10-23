@@ -1,8 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Lookahead Optimizer Wrapper.
 Implementation modified from: https://github.com/alphadl/lookahead.pytorch
 Paper: `Lookahead Optimizer: k steps forward, 1 step back` - https://arxiv.org/abs/1907.08610
 
-Copyright general_backbone
 """
 import torch
 from torch.optim.optimizer import Optimizer

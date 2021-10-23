@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Lambda Layer
 
 Paper: `LambdaNetworks: Modeling Long-Range Interactions Without Attention`
@@ -18,7 +19,6 @@ I've only implemented local lambda conv based pos embeddings.
 For a PyTorch impl that includes other embedding options checkout
 https://github.com/lucidrains/lambda-networks
 
-Copyright general_backbone
 """
 import torch
 from torch import nn

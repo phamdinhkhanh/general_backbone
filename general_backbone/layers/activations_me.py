@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Activations (memory-efficient w/ custom autograd)
 
 A collection of activations fn and modules with a common interface so that they can

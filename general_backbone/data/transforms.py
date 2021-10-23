@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 import torch
 import torchvision.transforms.functional as F
 from PIL import Image

@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Halo Self Attention
 
 Paper: `Scaling Local Self-Attention for Parameter Efficient Visual Backbones`
@@ -14,7 +15,6 @@ Status:
 This impl is a WIP, there is no official ref impl and some details in paper weren't clear to me.
 The attention mechanism works but it's slow as implemented.
 
-Copyright general_backbone
 """
 from typing import Tuple, List
 

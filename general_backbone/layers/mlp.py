@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ MLP module w/ dropout and configurable activation layer
 
 

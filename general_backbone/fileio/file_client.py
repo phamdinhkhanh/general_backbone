@@ -1,4 +1,4 @@
-
+# Copyright (c) general_backbone. All rights reserved.
 import inspect
 from abc import ABCMeta, abstractmethod
 from urllib.request import urlopen

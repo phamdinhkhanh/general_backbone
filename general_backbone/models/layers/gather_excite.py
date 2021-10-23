@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Gather-Excite Attention Block
 
 Paper: `Gather-Excite: Exploiting Feature Context in CNNs` - https://arxiv.org/abs/1810.12348
@@ -9,7 +10,6 @@ impl that covers all of the cases.
 
 NOTE: extent=0 + extra_params=False is equivalent to Squeeze-and-Excitation
 
-Copyright general_backbone
 """
 import math
 

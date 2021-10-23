@@ -1,11 +1,10 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Global Context Attention Block
 
 Paper: `GCNet: Non-local Networks Meet Squeeze-Excitation Networks and Beyond`
     - https://arxiv.org/abs/1904.11492
 
 Official code consulted as reference: https://github.com/xvjiarui/GCNet
-
-Copyright general_backbone
 """
 from torch import nn as nn
 import torch.nn.functional as F

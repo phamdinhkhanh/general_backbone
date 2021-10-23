@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Binary Cross Entropy w/ a few extras
 """
 from typing import Optional

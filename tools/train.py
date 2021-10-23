@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 #!/usr/bin/env python
-# Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import os
 import os.path as osp
@@ -196,6 +196,7 @@ if args_config.config is None:
 else:
     cfg = Config.fromfile(args_config.config)
 
+print(cfg)
 cfg_train = cfg.train_conf
 cfg_test = cfg.test_conf
 data_config_train = cfg.data_conf.data.train

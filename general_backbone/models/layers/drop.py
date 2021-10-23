@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ DropBlock, DropPath
 
 PyTorch implementations of DropBlock and DropPath (Stochastic Depth) regularization layers.
@@ -12,7 +13,6 @@ DropBlock impl inspired by two Tensorflow impl that I liked:
  - https://github.com/tensorflow/tpu/blob/master/models/official/resnet/resnet_model.py#L74
  - https://github.com/clovaai/assembled-cnn/blob/master/nets/blocks.py
 
-Copyright general_backbone
 """
 import torch
 import torch.nn as nn

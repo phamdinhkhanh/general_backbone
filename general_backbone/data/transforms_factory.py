@@ -1,7 +1,7 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Transforms Factory
 Factory methods for building image transforms for use with TIMM (PyTorch Image Models)
 
-Copyright general_backbone
 """
 import math
 

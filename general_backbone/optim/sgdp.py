@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """
 SGDP Optimizer Implementation copied from https://github.com/clovaai/AdamP/blob/master/adamp/sgdp.py
 

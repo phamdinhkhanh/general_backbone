@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch LARS / LARC Optimizer
 
 An implementation of LARS (SGD) + LARC in PyTorch
@@ -8,7 +9,6 @@ Based on:
 
 Additional cleanup and modifications to properly support PyTorch XLA.
 
-Copyright 2021 Ross Wightman
 """
 import torch
 from torch.optim.optimizer import Optimizer

@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ NormAct (Normalizaiton + Activation Layer) Factory
 
 Create norm + act combo modules that attempt to be backwards compatible with separate norm + act

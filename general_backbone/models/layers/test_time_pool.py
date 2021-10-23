@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Test Time Pooling (Average-Max Pool)
-
-Copyright general_backbone
 """
 
 import logging

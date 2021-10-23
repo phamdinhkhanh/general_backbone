@@ -1,10 +1,10 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ RMSProp modified to behave like Tensorflow impl
 
 Originally cut & paste from PyTorch RMSProp
 https://github.com/pytorch/pytorch/blob/063946d2b3f3f1e953a2a3b54e0b34f1393de295/torch/optim/rmsprop.py
 Licensed under BSD-Clause 3 (ish), https://github.com/pytorch/pytorch/blob/master/LICENSE
 
-Modifications Copyright 2021 Ross Wightman
 """
 
 import torch

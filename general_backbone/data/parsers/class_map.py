@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 import os
-
 
 def load_class_map(filename, root=''):
     class_map_path = filename

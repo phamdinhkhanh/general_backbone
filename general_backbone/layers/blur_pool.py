@@ -1,9 +1,8 @@
+# Copyright (c) general_backbone. All rights reserved.
 """
 BlurPool layer inspired by
  - Kornia's Max_BlurPool2d
  - Making Convolutional Networks Shift-Invariant Again :cite:`zhang2019shiftinvar`
-
-Copyright genereral_backbone
 """
 
 import torch

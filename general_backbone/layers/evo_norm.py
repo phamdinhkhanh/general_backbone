@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """EvoNormB0 (Batched) and EvoNormS0 (Sample) in PyTorch
 
 An attempt at getting decent performing EvoNorms running in PyTorch.

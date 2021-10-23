@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch selectable adaptive pooling
 Adaptive pooling with the ability to select the type of pooling from:
     * 'avg' - Average pooling

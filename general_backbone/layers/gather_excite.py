@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Gather-Excite Attention Block
 
 Paper: `Gather-Excite: Exploiting Feature Context in CNNs` - https://arxiv.org/abs/1810.12348
@@ -8,8 +9,6 @@ I've tried to support all of the extent both w/ and w/o params. I don't believe 
 impl that covers all of the cases.
 
 NOTE: extent=0 + extra_params=False is equivalent to Squeeze-and-Excitation
-
-Copyright general_backbone
 """
 import math
 

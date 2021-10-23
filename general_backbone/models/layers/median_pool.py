@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Median Pool
-Copyright general_backbone
 """
 import torch.nn as nn
 import torch.nn.functional as F

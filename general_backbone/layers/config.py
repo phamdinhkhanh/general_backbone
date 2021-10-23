@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Model / Layer Config singleton state
 """
 from typing import Any, Optional

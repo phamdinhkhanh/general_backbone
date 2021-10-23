@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ PyTorch Feature Extraction Helpers
 
 A collection of classes, functions, modules to help extract features from models

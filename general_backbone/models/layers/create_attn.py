@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Attention Factory
-
-Copyright general_backbone
 """
 import torch
 from functools import partial

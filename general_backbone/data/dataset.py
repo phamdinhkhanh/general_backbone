@@ -1,6 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Quick n Simple Image Folder, Tarfile based DataSet
-
-Copyright general_backbone
 """
 from albumentations.augmentations.geometric.resize import SmallestMaxSize
 import torch.utils.data as data

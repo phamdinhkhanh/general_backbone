@@ -1,5 +1,5 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Optimizer Factory w/ Custom Weight Decay
-Copyright general_backbone
 """
 from typing import Optional
 

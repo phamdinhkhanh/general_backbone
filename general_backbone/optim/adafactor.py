@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Adafactor Optimizer
 
 Lifted from https://github.com/pytorch/fairseq/blob/master/fairseq/optim/adafactor.py

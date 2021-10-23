@@ -1,6 +1,6 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Conv2d + BN + Act
 
-Copyright general_backbone
 """
 from torch import nn as nn
 

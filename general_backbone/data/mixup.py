@@ -1,3 +1,4 @@
+# Copyright (c) general_backbone. All rights reserved.
 """ Mixup and Cutmix
 
 Papers:
@@ -8,7 +9,6 @@ CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Fea
 Code Reference:
 CutMix: https://github.com/clovaai/CutMix-PyTorch
 
-Copyright general_backbone
 """
 import numpy as np
 import torch
